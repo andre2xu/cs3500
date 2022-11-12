@@ -166,6 +166,7 @@ body {
 
       #serverButtons button {
         font-size: 1.4vw;
+        border-width: 0.15vw;
       }
     }
   }
@@ -318,7 +319,7 @@ body {
           flex-direction: row;
 
           button {
-            border-width: 0.15vw;
+            border-width: 0.2vw;
             padding: 2px 10px;
             margin-right: 5%;
             font-size: 1.6vw;
@@ -344,6 +345,7 @@ body {
           flex-direction: row;
 
           button {
+            border-width: 0.15vw;
             padding: 2px 10px;
             margin-right: 5%;
             font-size: 1.3vw;
