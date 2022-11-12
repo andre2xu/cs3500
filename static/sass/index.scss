@@ -1,5 +1,7 @@
 @import "colors";
 
+$screenSizeBoundary: 750px;
+
 
 
 * {
@@ -111,8 +113,7 @@ body {
 
 
 
-  // responsiveness
-  @media screen and (min-width: 750px) {
+  @media screen and (min-width: $screenSizeBoundary) {
     #farmMap-AND-date-AND-time #date-AND-time {
       margin-top: 2%;
       font-size: 2vw;
@@ -165,8 +166,7 @@ body {
   }
 
 
-
-  @media screen and (max-width: 750px) {
+  @media screen and (max-width: $screenSizeBoundary) {
     #farmMap-AND-date-AND-time {
       margin-bottom: 8%;
 
@@ -258,4 +258,83 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1 0 0;
+  padding-left: 3%;
+
+  #plotInterface {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    #plotNum-AND-interfaceButtons {
+      flex: 1 0 0;
+      display: flex;
+      flex-direction: row;
+
+      #interfaceButtons {
+        padding-left: 3%;
+
+        button {
+          border: 2px solid $dark_outline;
+        }
+      }
+    }
+
+    #harvestDate {
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
+
+
+
+    @media screen and (max-width: $screenSizeBoundary) {
+      font-size: 23px;
+
+      #plotNum-AND-interfaceButtons #interfaceButtons button {
+        font-size: 20px;
+        padding: 2px 8px;
+        cursor: pointer;
+        background-color: transparent;
+      }
+    }
+    @media screen and (max-width: 650px) {
+      flex-direction: column;
+      align-items: flex-start;
+
+      #plotNum-AND-interfaceButtons {
+        width: 100%;
+        margin-bottom: 3%;
+        align-items: center;
+
+        #interfaceButtons {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          button {
+            margin-right: 8%;
+          }
+        }
+      }
+
+      #harvestDate {
+        margin: 0;
+      }
+    }
+    @media screen and (max-width: 450px) {
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 18px;
+
+      #plotNum-AND-interfaceButtons #interfaceButtons button {
+        font-size: 14px;
+      }
+    }
+  }
+
+
+
+  @media screen and (max-width: $screenSizeBoundary) {
+    padding-top: 15%;
+    padding-left: 0;
+  }
 }
