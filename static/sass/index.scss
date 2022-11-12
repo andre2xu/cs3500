@@ -11,13 +11,14 @@
 
 body {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100vh;
   padding: 2%;
   background-color: rgb(204,204,204);
 
-  @media screen and (min-width: 750px) {
-    flex-direction: row;
+  @media screen and (max-width: 750px) {
+    flex-direction: column;
+    height: auto;
   }
 }
 
@@ -36,20 +37,9 @@ body {
     }
 
     #date-AND-time {
-      font-size: 23px;
-      margin-top: 5%;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-    }
-
-    // responsiveness
-    @media screen and (max-width: 750px) {
-      margin-bottom: 8%;
-
-      #date-AND-time {
-        margin-top: 2%;
-      }
     }
   }
 
@@ -83,11 +73,8 @@ body {
           align-items: center;
 
           .circle {
-            height: 10px;
-            width: 10px;
             border-radius: 50%;
             margin-left: auto;
-            border: 1px solid $dark_outline;
 
             &.red {
               background-color: $red_light;
@@ -117,6 +104,141 @@ body {
         margin-bottom: 10%;
         border: 2px solid $dark_outline;
         background-color: transparent;
+        cursor: pointer;
+      }
+    }
+  }
+
+
+
+  // responsiveness
+  @media screen and (min-width: 750px) {
+    #farmMap-AND-date-AND-time #date-AND-time {
+      margin-top: 2%;
+      font-size: 2vw;
+    }
+
+    #serversInterface {
+      #serverList-AND-serverMetrics {
+        font-size: 1.8vw;
+
+        ul li {
+          margin-bottom: 8%;
+        }
+
+        #serverList .circle {
+          height: 1.3vw;
+          width: 1.3vw;
+          border: 1px solid $dark_outline;
+        }
+      }
+
+      #serverButtons button {
+        font-size: 1.8vw;
+        padding: 3px 6px;
+      }
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    #farmMap-AND-date-AND-time #date-AND-time {
+      font-size: 1.6vw;
+    }
+
+    #serversInterface {
+      #serverList-AND-serverMetrics {
+        font-size: 1.4vw;
+
+        ul li {
+          margin-bottom: 3%;
+        }
+
+        #serverList .circle {
+          height: 1vw;
+          width: 1vw;
+        }
+      }
+
+      #serverButtons button {
+        font-size: 1.4vw;
+      }
+    }
+  }
+
+
+
+  @media screen and (max-width: 750px) {
+    #farmMap-AND-date-AND-time {
+      margin-bottom: 8%;
+
+      #date-AND-time {
+        margin-top: 2%;
+        font-size: 23px;
+      }
+    }
+
+    #serversInterface {
+      #serverList-AND-serverMetrics {
+        font-size: 20px;
+
+        ul li {
+          margin-bottom: 10px;
+        }
+
+        #serverList .circle {
+          height: 15px;
+          width: 15px;
+          border: 1px solid $dark_outline;
+        }
+      }
+
+      #serverButtons {
+        justify-content: space-evenly;
+
+        button {
+          margin: 0;
+          font-size: 16px;
+          padding: 5px 10px;
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 450px) {
+    #farmMap-AND-date-AND-time #date-AND-time {
+      font-size: 20px;
+    }
+
+    #serversInterface {
+      #serverList-AND-serverMetrics {
+        font-size: 15px;
+
+        #serverList .circle {
+          height: 12px;
+          width: 12px;
+        }
+      }
+
+      #serverButtons button {
+        font-size: 12px;
+      }
+    }
+  }
+  @media screen and (max-width: 350px) {
+    #farmMap-AND-date-AND-time #date-AND-time {
+      font-size: 16px;
+    }
+
+    #serversInterface {
+      #serverList-AND-serverMetrics {
+        font-size: 12px;
+
+        #serverList .circle {
+          height: 10px;
+          width: 10px;
+        }
+      }
+
+      #serverButtons button {
+        font-size: 10px;
       }
     }
   }
