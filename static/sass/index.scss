@@ -53,7 +53,6 @@ body {
 
     #serverList-AND-serverMetrics {
       flex: 1 0 0;
-      border: 2px solid $light_outline;
       display: flex;
       flex-direction: row;
 
@@ -66,7 +65,6 @@ body {
         background-color: $list_bg;
         overflow-y: scroll;
         color: $list_text_clr;
-        border-right: 2px solid $light_outline;
         padding: 2%;
 
         li {
@@ -121,22 +119,29 @@ body {
 
     #serversInterface {
       #serverList-AND-serverMetrics {
+        border: 0.2vw solid $light_outline;
         font-size: 1.8vw;
 
         ul li {
           margin-bottom: 8%;
         }
 
-        #serverList .circle {
-          height: 1.3vw;
-          width: 1.3vw;
-          border: 1px solid $dark_outline;
+        #serverList {
+          border-right: 0.2vw solid $light_outline;
+
+          .circle {
+            height: 1.3vw;
+            width: 1.3vw;
+            border: 0.15vw solid $dark_outline;
+          }
         }
       }
 
       #serverButtons button {
         font-size: 1.8vw;
-        padding: 3px 6px;
+        padding: 0.5vw 1vw;
+        border-width: 0.2vw;
+        margin-bottom: 1.5vw;
       }
     }
   }
@@ -182,16 +187,21 @@ body {
 
     #serversInterface {
       #serverList-AND-serverMetrics {
+        border: 2px solid $light_outline;
         font-size: 20px;
 
         ul li {
           margin-bottom: 10px;
         }
 
-        #serverList .circle {
-          height: 15px;
-          width: 15px;
-          border: 1px solid $dark_outline;
+        #serverList {
+          border-right: 2px solid $light_outline;
+
+          .circle {
+            height: 15px;
+            width: 15px;
+            border: 1.5px solid $dark_outline;
+          }
         }
       }
 
@@ -219,16 +229,23 @@ body {
 
     #serversInterface {
       #serverList-AND-serverMetrics {
+        border-width: 1.5px;
         font-size: 15px;
 
-        #serverList .circle {
-          height: 12px;
-          width: 12px;
+        #serverList {
+          border-right-width: 1.5px;
+
+          .circle {
+            height: 12px;
+            width: 12px;
+            border-width: 1px;
+          }
         }
       }
 
       #serverButtons button {
         font-size: 12px;
+        border-width: 1.5px;
       }
     }
   }
@@ -263,17 +280,19 @@ body {
   #plotInterface {
     display: flex;
     flex-direction: row;
-    align-items: center;
 
     #plotNum-AND-interfaceButtons {
       flex: 1 0 0;
       display: flex;
       flex-direction: row;
+      align-items: center;
 
       #interfaceButtons {
+        flex: 1 0 0;
         padding-left: 3%;
 
         button {
+          background-color: transparent;
           border: 2px solid $dark_outline;
         }
       }
@@ -286,6 +305,58 @@ body {
 
 
 
+    @media screen and (min-width: 750px) {
+      font-size: 2vw;
+      flex-direction: column;
+
+      #plotNum-AND-interfaceButtons {
+        align-items: center;
+
+        #interfaceButtons {
+          padding-left: 5%;
+          display: flex;
+          flex-direction: row;
+
+          button {
+            border-width: 0.15vw;
+            padding: 2px 10px;
+            margin-right: 5%;
+            font-size: 1.6vw;
+          }
+        }
+      }
+
+      #harvestDate {
+        margin: 3% 0 0 0;
+      }
+    }
+    @media screen and (min-width: 1200px) {
+      font-size: 1.6vw;
+      flex-direction: row;
+      align-items: center;
+
+      #plotNum-AND-interfaceButtons {
+        align-items: center;
+
+        #interfaceButtons {
+          padding-left: 5%;
+          display: flex;
+          flex-direction: row;
+
+          button {
+            padding: 2px 10px;
+            margin-right: 5%;
+            font-size: 1.3vw;
+          }
+        }
+      }
+
+      #harvestDate {
+        margin: 0 0 0 0;
+      }
+    }
+
+
     @media screen and (max-width: $screenSizeBoundary) {
       font-size: 23px;
 
@@ -294,6 +365,7 @@ body {
         padding: 2px 8px;
         cursor: pointer;
         background-color: transparent;
+        margin-right: 3%;
       }
     }
     @media screen and (max-width: 650px) {
@@ -311,7 +383,7 @@ body {
           align-items: center;
 
           button {
-            margin-right: 8%;
+            margin-right: 6%;
           }
         }
       }
@@ -327,6 +399,7 @@ body {
 
       #plotNum-AND-interfaceButtons #interfaceButtons button {
         font-size: 14px;
+        border-width: 1.5px;
       }
     }
   }
