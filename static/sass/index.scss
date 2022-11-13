@@ -14,9 +14,8 @@ $screenSizeBoundary: 750px;
 body {
   display: flex;
   flex-direction: row;
-  height: 100vh;
   padding: 2%;
-  background-color: rgb(204,204,204);
+  background-color: $body_bg;
 
   @media screen and (max-width: 750px) {
     flex-direction: column;
@@ -272,7 +271,7 @@ body {
   }
 }
 
-#plotInterface-AND-cropMetrics {
+#plotInterface-AND-cropMetrics-AND-inputSwitches {
   display: flex;
   flex-direction: column;
   flex: 1 0 0;
@@ -532,6 +531,74 @@ body {
             border-width: 1px;
           }
         }
+      }
+    }
+  }
+
+  #inputSwitches {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin-top: 10%;
+    color: $dark_outline;
+    font-size: 23px;
+
+    .switchFrame {
+      display: flex;
+      flex-direction: column;
+      border: 2px solid $light_outline;
+      padding: 80px 10px 40px;
+      position: relative;
+      width: 250px;
+      margin: 3%;
+
+      .switchLabel {
+        position: absolute;
+        top: -15px;
+        left: -5px;
+        background-color: $body_bg;
+        padding-bottom: 5px;
+        padding-right: 10px;
+        font-size: 25px;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 8%;
+
+        input {
+          font-size: 18px;
+          margin: 0 3%;
+          width: 20%;
+          border: 1.5px solid $dark_outline;
+          text-align: center;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        &.lr {
+          flex-direction: row;
+        }
+        &.tb {
+          flex-direction: column;
+        }
+      }
+
+      .switch {
+        margin-top: 15%;
+        background-color: $dark_outline;
+        border: 2px solid $dark_button_outline;
+        color: #fff;
+        padding: 4% 0;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+        width: 80%;
+        align-self: center;
       }
     }
   }

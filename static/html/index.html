@@ -66,7 +66,7 @@
     </div>
   </div>
 
-  <div id="plotInterface-AND-cropMetrics">
+  <div id="plotInterface-AND-cropMetrics-AND-inputSwitches">
     <div id="plotInterface">
       <div id="plotNum-AND-interfaceButtons">
         <span id="plotNum">Plot #n</span>
@@ -137,6 +137,143 @@
         <li>&rarr; Lamp: OFF | Time left: hh:mm:ss</li>
         <li>&rarr; CO<sub>2</sub> Regulator: OFF | Time left: hh:mm:ss</li>
       </ul>
+    </div>
+
+    <div id="inputSwitches">
+      <!-- sprinklers -->
+      <div id="sprinklers" class="switchFrame">
+        <label for="sprinklers" class="switchLabel">Sprinklers</label>
+
+        <div class="input-group lr">
+          <label for="plot">Plot</label>
+
+          <input id="plot" type="number" min="0" max="6" step="1" value="0">
+        </div>
+
+        <div class="input-group lr">
+          <label for="sprinkler-duration">Duration</label>
+
+          <input id="sprinkler-duration" type="number" min="1" step="1" value="1">
+
+          <span>s/in</span>
+        </div>
+
+        <div class="input-group lr">
+          <label for="pH">pH</label>
+
+          <input id="pH" type="number" min="0" max="14" step="1" value="7">
+        </div>
+
+        <button class="switch">TURN ON</button>
+      </div>
+
+      <!-- fertilizers -->
+      <div id="fertilizers" class="switchFrame">
+        <label for="fertilizers" class="switchLabel">Fertilizers</label>
+
+        <div class="input-group lr">
+          <label for="plot">Plot</label>
+
+          <input id="plot" type="number" min="0" max="6" step="1" value="0">
+        </div>
+
+        <div class="input-group lr">
+          <label for="fertilizer-duration">Duration</label>
+
+          <input id="fertilizer-duration" type="number" min="1" step="1" value="1">
+
+          <span>s/g</span>
+        </div>
+
+        <button class="switch">TURN ON</button>
+      </div>
+
+      <!-- temperature -->
+      <div id="temperature" class="switchFrame">
+        <label for="temperature" class="switchLabel">Temperature</label>
+
+        <div class="input-group lr">
+          <label for="plot">Plot</label>
+
+          <input id="plot" type="number" min="0" max="6" step="1" value="0">
+        </div>
+
+        <div class="input-group lr">
+          <label for="temperature-duration">Duration</label>
+
+          <input id="temperature-duration" type="number" min="1" step="1" value="1">
+
+          <span>s</span>
+        </div>
+
+        <div class="input-group lr">
+          <label for="temperature">Temp</label>
+
+          <input id="temperature" type="number" min="-50" max="50" step="20" value="0">
+
+          <span>&deg;C</span>
+        </div>
+
+        <button class="switch">TURN ON</button>
+      </div>
+
+      <!-- lighting -->
+      <div id="lighting" class="switchFrame">
+        <label for="lighting" class="switchLabel">Lighting</label>
+
+        <div class="input-group lr">
+          <label for="plot">Plot</label>
+
+          <input id="plot" type="number" min="0" max="6" step="1" value="0">
+        </div>
+
+        <div class="input-group lr">
+          <label for="sprinkler-duration">Duration</label>
+
+          <input id="sprinkler-duration" type="number" min="0" step="1" value="1">
+
+          <span>s</span>
+        </div>
+
+        <div class="input-group lr">
+          <label for="light">Light</label>
+
+          <input id="light" type="number" min="0" step="1" value="1">
+
+          <span>lux</span>
+        </div>
+
+        <button class="switch">TURN ON</button>
+      </div>
+
+      <!-- CO2 -->
+      <div id="co2" class="switchFrame">
+        <label for="co2" class="switchLabel">CO<sub>2</sub></label>
+
+        <div class="input-group lr">
+          <label for="plot">Plot</label>
+
+          <input id="plot" type="number" min="0" max="6" step="1" value="0">
+        </div>
+
+        <div class="input-group lr">
+          <label for="sprinkler-duration">Duration</label>
+
+          <input id="sprinkler-duration" type="number" min="0" step="1" value="1">
+
+          <span>s</span>
+        </div>
+
+        <div class="input-group lr">
+          <label for="concentration">Conc.</label>
+
+          <input id="concentration" type="number" min="0" step="1" value="0">
+
+          <span>ppm</span>
+        </div>
+
+        <button class="switch">TURN ON</button>
+      </div>
     </div>
   </div>
 </body>
