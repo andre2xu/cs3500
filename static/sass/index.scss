@@ -406,6 +406,136 @@ body {
     }
   }
 
+  #plotList-AND-cropMetrics {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.8vw;
+
+    ul {
+      list-style: none;
+    }
+
+    #plotList {
+      flex: 1 0 0;
+      background-color: $list_bg;
+      overflow-y: scroll;
+      color: $list_text_clr;
+      padding: 1vw;
+      border-right: 0.15vw solid $dark_outline;
+
+      li {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 8%;
+
+        .circle {
+          border-radius: 50%;
+          height: 1.3vw;
+          width: 1.3vw;
+          border: 0.15vw solid $dark_outline;
+          margin-left: auto;
+
+          &.red {
+            background-color: $red_light;
+          }
+          &.green {
+            background-color: $green_light;
+          }
+        }
+      }
+    }
+
+    #cropMetrics {
+      flex: 1 0 0;
+      background-color: #fff;
+      padding: 1vw;
+
+      li {
+        margin-bottom: 3%;
+      }
+    }
+
+
+
+    @media screen and (min-width: $screenSizeBoundary) {
+      margin-top: 3%;
+      border: 0.15vw solid $dark_outline;
+    }
+    @media screen and (min-width: 1200px) {
+      font-size: 1.3vw;
+
+      #plotList li {
+        margin-bottom: 5%;
+
+        .circle {
+          height: 1vw;
+          width: 1vw;
+        }
+      }
+    }
+
+
+    @media screen and (max-width: $screenSizeBoundary) {
+      margin-top: 3%;
+      font-size: 20px;
+      border: 2px solid $light_outline;
+
+      #plotList {
+        padding: 3%;
+        border-right: 2px solid $light_outline;
+
+        li {
+          margin-bottom: 5%;
+
+          .circle {
+            height: 15px;
+            width: 15px;
+            border-width: 1.5px;
+          }
+        }
+      }
+
+      #cropMetrics {
+        padding: 3%;
+      }
+    }
+    @media screen and (max-width: 450px) {
+      margin-top: 3%;
+      font-size: 16px;
+      border-width: 1.5px;
+
+      #plotList {
+        border-right-width: 1.5px;
+
+        li {
+          margin-bottom: 8%;
+
+          .circle {
+            height: 12px;
+            width: 12px;
+            border-width: 1px;
+          }
+        }
+      }
+    }
+    @media screen and (max-width: 350px) {
+      margin-top: 3%;
+      font-size: 12px;
+
+      #plotList {
+        li {
+          margin-bottom: 8%;
+
+          .circle {
+            height: 10px;
+            width: 10px;
+            border-width: 1px;
+          }
+        }
+      }
+    }
+  }
+
 
 
   @media screen and (max-width: $screenSizeBoundary) {
