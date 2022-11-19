@@ -129,7 +129,7 @@
       <div id="farmMap"></div>
 
       <div id="date-AND-time">
-        <span id="dynamicCalendar">Date: dd/mm/yyyy</span>
+        <span id="dynamicCalendar"></span>
         <span id="dynamicClock"></span>
       </div>
     </div>
@@ -393,6 +393,6 @@
 
 
 
-  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/index.js') }}" type="module"></script>
 </body>
 </html>
