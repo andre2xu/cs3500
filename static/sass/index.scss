@@ -516,6 +516,7 @@ body {
         button {
           background-color: transparent;
           border: 2px solid $dark_outline;
+          cursor: pointer;
 
           &:active {
             background-color: $light_button_click;
