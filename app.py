@@ -1,9 +1,12 @@
-import os
-from flask import Flask, request,render_template,redirect,url_for
+import os, mimetypes
+from flask import Flask, render_template
 
 
 from Models import db,CropData
 STATIC_FOLDER = os.path.dirname(__file__) + '/static/'
+
+mimetypes.add_type('application/javascript', '.js')
+
 db_path = os.path.abspath("database.db")
 app = Flask(
     import_name=__name__,

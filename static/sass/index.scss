@@ -12,6 +12,7 @@ $screenSizeBoundary: 750px;
 }
 
 body {
+  position: relative;
   display: flex;
   flex-direction: row;
   padding: 2%;
@@ -20,6 +21,214 @@ body {
   @media screen and (max-width: 750px) {
     flex-direction: column;
     height: auto;
+  }
+}
+
+.crudInterface {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(235, 235, 235);
+  outline-color: rgb(132, 132, 132);
+  outline-style: solid;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+
+  &.hidden {
+    display: none;
+  }
+
+  .closeButton {
+    background-color: red;
+    color: #fff;
+    border: none;
+    margin-left: auto;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .formBody {
+    display: flex;
+    flex-direction: column;
+
+    & > span {
+      color: rgb(130, 130, 130);
+      font-weight: bold;
+    }
+
+    div {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      input {
+        text-align: center;
+        border-style: solid;
+        border-color: rgb(130, 130, 130);
+      }
+    }
+  }
+
+  button[type="submit"] {
+    background-color: rgb(85, 85, 85);
+    color: #fff;
+    border-style: solid;
+    border-color: rgb(162, 162, 162);
+    width: fit-content;
+    margin: 0 auto;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+
+
+  @media screen and (min-width: $screenSizeBoundary) {
+    outline-width: 0.2vw;
+
+    .closeButton {
+      font-size: 2vw;
+      padding: 0 6%;
+    }
+
+    .formBody {
+      margin: 10% 8% 0;
+
+      & > span {
+        font-size: 2.5vw;
+        margin-bottom: 8%;
+      }
+
+      .formField {
+        margin-bottom: 5%;
+        font-size: 1.5vw;
+
+        label {
+          margin-right: 1%;
+        }
+
+        span {
+          margin: 1%;
+        }
+
+        input {
+          width: 15%;
+          font-size: 1.5vw;
+          border-width: 0.1vw;
+        }
+      }
+    }
+
+    button[type="submit"] {
+      font-size: 2vw;
+      border-width: 0.15vw;
+      padding: 2% 10%;
+      margin: 10% auto 5%;
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    .closeButton {
+      font-size: 1.5vw;
+    }
+
+    .formBody {
+      & > span {
+        font-size: 1.8vw;
+      }
+
+      .formField {
+        font-size: 1vw;
+
+        input {
+          font-size: 1vw;
+        }
+      }
+    }
+
+    button[type="submit"] {
+      font-size: 1.5vw;
+    }
+  }
+
+
+  @media screen and (max-width: $screenSizeBoundary) {
+    width: 350px;
+    outline-width: 1px;
+
+    .closeButton {
+      font-size: 15px;
+      padding: 0 6%;
+    }
+
+    .formBody {
+      margin: 10% 8% 0;
+
+      & > span {
+        font-size: 18px;
+        margin-bottom: 8%;
+      }
+
+      .formField {
+        margin-bottom: 5%;
+        font-size: 14px;
+
+        label {
+          margin-right: 1%;
+        }
+
+        span {
+          margin: 1%;
+        }
+
+        input {
+          width: 15%;
+          font-size: 14px;
+          border-width: 0.1vw;
+        }
+      }
+    }
+
+    button[type="submit"] {
+      font-size: 15px;
+      border-width: 1px;
+      padding: 2% 10%;
+      margin: 10% auto 5%;
+    }
+  }
+  @media screen and (max-width: 550px) {
+    width: 325px;
+
+    .closeButton {
+      font-size: 13px;
+    }
+
+    .formBody {
+      & > span {
+        font-size: 16px;
+      }
+
+      .formField {
+        font-size: 12px;
+
+        input {
+          font-size: 12px;
+        }
+      }
+    }
+
+    button[type="submit"] {
+      font-size: 13px;
+    }
+  }
+  @media screen and (max-width: 450px) {
+    width: 300px;
+  }
+  @media screen and (max-width: 350px) {
+    width: 250px;
+  }
+  @media screen and (max-width: 300px) {
+    width: 225px;
   }
 }
 
