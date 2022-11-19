@@ -1,3 +1,10 @@
+import {
+    SERVER_METRICS,
+    SERVER_METRICS_LIST
+} from './data.js';
+
+
+
 export function updateTemporalMetrics(calendar, clock) {
     const DATE = new Date();
 
@@ -23,4 +30,46 @@ export function updateTemporalMetrics(calendar, clock) {
     calendar.innerText = `Date: ${day}/${month}/${year}`;
 
     clock.innerText = `Time: ${hrs}:${mins}`;
-}
+};
+
+
+
+// SERVER API
+export function loadServerMetrics(serverNum) {
+    const METRICS = SERVER_METRICS[serverNum];
+
+    SERVER_METRICS_LIST[0].innerText = `Variable: ${METRICS['variable']}`;
+    SERVER_METRICS_LIST[1].innerText = `Status: ${METRICS['status']}`;
+};
+
+export function activateServer(serverNum, selectedServer) {
+    SERVER_METRICS[serverNum]['status'] = 'ONLINE';
+
+    selectedServer.lastElementChild.classList.replace('red', 'green');
+
+    loadServerMetrics(serverNum);
+};
+
+export function deactivateServer(serverNum, selectedServer) {
+    SERVER_METRICS[serverNum]['status'] = 'OFFLINE';
+
+    selectedServer.lastElementChild.classList.replace('green', 'red');
+
+    loadServerMetrics(serverNum);
+};
+
+export function restartServer(serverNum, selectedServer) {
+    SERVER_METRICS[serverNum]['status'] = 'RESTARTING';
+
+    selectedServer.lastElementChild.classList.replace('green', 'red');
+    loadServerMetrics(serverNum);
+
+    setTimeout(() => {
+        selectedServer.lastElementChild.classList.replace('red', 'green');
+        SERVER_METRICS[serverNum]['status'] = 'ONLINE';
+
+        if (selectedServer.classList.contains('selected')) {
+            loadServerMetrics(serverNum);
+        }
+    }, 3000);
+};
