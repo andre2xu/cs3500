@@ -10,8 +10,60 @@
   <title>Farm Automation System</title>
 </head>
 <body>
-  <form action="/" method="post" class="crudInterface hidden">
-    
+  <form id="addCrop" action="#" method="post" class="crudInterface hidden">
+    <button class="closeButton" type="button">X</button>
+
+    <div class="formBody">
+      <span>Add Crop</span>
+
+      <div class="formField">
+        <label for="plotNum">Plot number:</label>
+        <input id="plotNum" type="number" min="0" max="10" value="0">
+      </div>
+
+      <div class="formField">
+        <label for="harvestCountdown">Days required for growth:</label>
+        <input id="harvestCountdown" type="number"  min="1" value="1">
+      </div>
+
+      <div class="formField">
+        <label for="seedTemperature">Optimum seed temperature range (&deg;C):</label>
+        <input id="seedTemperature" type="number" min="-100" max="100" value="25">
+        <span>to</span>
+        <input type="number" min="-100" max="100" value="28">
+      </div>
+
+      <div class="formField">
+        <label for="cropTemperature">Optimum crop temperature range (&deg;C):</label>
+        <input id="cropTemperature" type="number" min="-100" max="100" value="25">
+        <span>to</span>
+        <input type="number" min="-100" max="100" value="28">
+      </div>
+
+      <div class="formField">
+        <label for="co2">Optimum CO<sub>2</sub> range (ppm):</label>
+        <input id="co2" type="number" min="1" max="1500" value="800">
+        <span>to</span>
+        <input type="number" min="1" max="1500" value="1300">
+      </div>
+
+      <div class="formField">
+        <label for="lightDuration">Light exposure (hrs):</label>
+        <input id="lightDuration" type="number" min="1" value="1">
+      </div>
+
+      <div class="formField">
+        <label for="waterDepth">Depth of water required (inches):</label>
+        <input id="waterDepth" type="number" min="1" value="1">
+      </div>
+
+      <div class="formField">
+        <label for="wateringInterval">Watering interval (hrs):</label>
+        <input id="wateringInterval" type="number" min="1" value="1">
+      </div>
+    </div>
+
+    <button type="submit">Add</button>
   </form>
 
 
