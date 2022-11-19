@@ -26,12 +26,14 @@ def index():
     return render_template('index.html')
 
 
-@app.route("/api/addCrop/<id>", methods=["GET","POST"])
-def addCrop(id):
-    plot = CropData.query.filter_by(plot_num = id).first()
+@app.route("/api/addCrop/<plotNum>", methods=["GET","POST"])
+def addCrop(plotNum):
+    plot = CropData.query.filter_by(plot_num = plotNum).first()
+
     if plot:
         db.session.delete(plot)
         db.session.commit()
+
         days_for_growth = request.form["days_for_growth"]
         seed_temp = request.form["seed_temp"]
         crop_temp = request.form["crop_temp"]
@@ -39,23 +41,37 @@ def addCrop(id):
         light_exp = request.form["light_exp"]
         water_depth = request.form["water_depth"]
         water_interval = request.form["water_interval"]
-        plot = CropData(plot_num=id,seed_temp=seed_temp,days_for_growth=days_for_growth,crop_temp=crop_temp,co2_level=co2_level,light_exp=light_exp,water_depth=water_depth,water_interval=water_interval)
+
+        plot = CropData(
+            plot_num=plotNum,
+            seed_temp=seed_temp,
+            days_for_growth=days_for_growth,
+            crop_temp=crop_temp,
+            co2_level=co2_level,
+            light_exp=light_exp,
+            water_depth=water_depth,
+            water_interval=water_interval
+        )
+
         db.session.add(plot)
         db.session.commit()
-        return redirect(url_for('index'))
     else:
-        return f"Plot number {id} does not exist"
+        print(f"Plot number {plotNum} does not exist")
+
+    return redirect(url_for('index'))
 
 
 @app.route('/api/deleteCrop/<plotNum>', methods=['GET'])
 def deleteCrop(plotNum):
     plot = CropData.query.filter_by(plot_num=plotNum).first()
+
     if plot:
         db.session.delete(plot)
         db.session.commit()
-        return redirect(url_for("index"))
     else:
-        return f"Plot number <plotNum> does not exist"
+        print(f"Plot number {plotNum} does not exist")
+
+    return redirect(url_for("index"))
 
 
 
