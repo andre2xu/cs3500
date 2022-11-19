@@ -1,6 +1,5 @@
 import os, mimetypes
-from flask import Flask, render_template
-
+from flask import Flask, request,render_template,redirect,url_for
 
 from Models import db,CropData
 STATIC_FOLDER = os.path.dirname(__file__) + '/static/'
