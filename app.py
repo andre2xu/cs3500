@@ -1,30 +1,29 @@
 import os, mimetypes
 from flask import Flask, request,render_template,redirect,url_for
 
-from Models import db,CropData
+from Models import db, CropData
 STATIC_FOLDER = os.path.dirname(__file__) + '/static/'
 
 mimetypes.add_type('application/javascript', '.js')
 
 db_path = os.path.abspath("database.db")
+
 app = Flask(
     import_name=__name__,
     template_folder=STATIC_FOLDER + 'html',
     static_folder=STATIC_FOLDER
 )
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+db.init_app(app)
+with app.app_context():
+    db.create_all()
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
-
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-db.init_app(app)
-with app.app_context():
-    db.create_all()
 
 
 @app.route("/api/addCrop/<id>", methods=["GET","POST"])
@@ -46,6 +45,8 @@ def addCrop(id):
         return redirect(url_for('index'))
     else:
         return f"Plot number {id} does not exist"
+
+
 @app.route('/api/deleteCrop/<plotNum>', methods=['GET'])
 def deleteCrop(plotNum):
     plot = CropData.query.filter_by(plot_num=plotNum).first()
@@ -55,6 +56,8 @@ def deleteCrop(plotNum):
         return redirect(url_for("index"))
     else:
         return f"Plot number <plotNum> does not exist"
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
