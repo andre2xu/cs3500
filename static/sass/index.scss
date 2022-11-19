@@ -146,6 +146,86 @@ body {
       font-size: 1.5vw;
     }
   }
+
+
+  @media screen and (max-width: $screenSizeBoundary) {
+    width: 350px;
+    outline-width: 1px;
+
+    .closeButton {
+      font-size: 15px;
+      padding: 0 6%;
+    }
+
+    .formBody {
+      margin: 10% 8% 0;
+
+      & > span {
+        font-size: 18px;
+        margin-bottom: 8%;
+      }
+
+      .formField {
+        margin-bottom: 5%;
+        font-size: 14px;
+
+        label {
+          margin-right: 1%;
+        }
+
+        span {
+          margin: 1%;
+        }
+
+        input {
+          width: 15%;
+          font-size: 14px;
+          border-width: 0.1vw;
+        }
+      }
+    }
+
+    button[type="submit"] {
+      font-size: 15px;
+      border-width: 1px;
+      padding: 2% 10%;
+      margin: 10% auto 5%;
+    }
+  }
+  @media screen and (max-width: 550px) {
+    width: 325px;
+
+    .closeButton {
+      font-size: 13px;
+    }
+
+    .formBody {
+      & > span {
+        font-size: 16px;
+      }
+
+      .formField {
+        font-size: 12px;
+
+        input {
+          font-size: 12px;
+        }
+      }
+    }
+
+    button[type="submit"] {
+      font-size: 13px;
+    }
+  }
+  @media screen and (max-width: 450px) {
+    width: 300px;
+  }
+  @media screen and (max-width: 350px) {
+    width: 250px;
+  }
+  @media screen and (max-width: 300px) {
+    width: 225px;
+  }
 }
 
 #farmMap-AND-serversInterface {
