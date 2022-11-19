@@ -1,17 +1,20 @@
 import os, mimetypes
 from flask import Flask, request,render_template,redirect,url_for
-
 from Models import db,CropData
+from init_db import create_db
+
+
 STATIC_FOLDER = os.path.dirname(__file__) + '/static/'
 
 mimetypes.add_type('application/javascript', '.js')
-
+create_db()
 db_path = os.path.abspath("database.db")
 app = Flask(
     import_name=__name__,
     template_folder=STATIC_FOLDER + 'html',
     static_folder=STATIC_FOLDER
 )
+
 
 
 @app.route('/')
