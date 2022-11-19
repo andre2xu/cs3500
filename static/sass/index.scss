@@ -279,6 +279,11 @@ body {
           display: flex;
           flex-direction: row;
           align-items: center;
+          cursor: pointer;
+
+          &.selected {
+            color: $list_selection_clr;
+          }
 
           .circle {
             border-radius: 50%;
@@ -313,6 +318,10 @@ body {
         border: 2px solid $dark_outline;
         background-color: transparent;
         cursor: pointer;
+
+        &:active {
+          background-color: $light_button_click;
+        }
       }
     }
   }
