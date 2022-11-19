@@ -653,6 +653,10 @@ body {
         flex-direction: row;
         margin-bottom: 8%;
 
+        &.selected {
+          color: $list_selection_clr;
+        }
+
         .circle {
           border-radius: 50%;
           height: 1.3vw;
