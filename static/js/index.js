@@ -1,4 +1,11 @@
 import {
+    CALENDAR,
+    CLOCK,
+    ADD_FORM,
+    EDIT_FORM
+} from './data.js';
+
+import {
     updateTemporalMetrics,
     loadServerMetrics,
     activateServer,
@@ -7,9 +14,6 @@ import {
 } from './helpers.js';
 
 
-
-const CALENDAR = document.getElementById('dynamicCalendar');
-const CLOCK = document.getElementById('dynamicClock');
 
 let selectedServer = document.querySelector('[data-server-num="0"]');
 
@@ -55,6 +59,25 @@ window.addEventListener('load', () => {
                 break;
             case 'Restart':
                 restartServer(SERVER_NUM, selectedServer);
+                break;
+        }
+    });
+
+
+
+    document.getElementById('interfaceButtons').addEventListener('click', (e) => {
+        const BUTTON = e.target.innerText;
+
+        switch (BUTTON) {
+            case 'Add':
+                EDIT_FORM.classList.add('hidden');
+                ADD_FORM.classList.remove('hidden');
+                break;
+            case 'Edit':
+                ADD_FORM.classList.add('hidden');
+                EDIT_FORM.classList.remove('hidden');
+                break;
+            case 'Delete':
                 break;
         }
     });

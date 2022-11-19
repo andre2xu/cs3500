@@ -47,6 +47,10 @@ body {
     margin-left: auto;
     font-weight: bold;
     cursor: pointer;
+
+    &:hover {
+      background-color: #ca0000;
+    }
   }
 
   .formBody {
@@ -512,6 +516,10 @@ body {
         button {
           background-color: transparent;
           border: 2px solid $dark_outline;
+
+          &:active {
+            background-color: $light_button_click;
+          }
         }
       }
     }
