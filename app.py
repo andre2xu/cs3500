@@ -60,19 +60,7 @@ class DBSchema(SQLAlchemySchema):
     water_depth = fields.Float(required=True)
     water_interval = fields.Float(required=True)
 
-    # patch_id = db.Column(db.Integer, primary_key=True)
-    # soil_temp = db.Column(db.Float, unique=False, nullable=False)
-    # air_temp = db.Column(db.Float, unique=False, nullable=False)
-    # soil_PH = db.Column(db.Integer, unique=False, nullable=False)
-    # soil_temp = db.Column(db.Long, unique=False, nullable=False)
-    # soil_moisture = db.Column(db.Double, unique=False, nullable=False)
-    # light_level = db.Column(db.Integer, unique=False, nullable=False)
-#from form to validation to DB
-#delete from PK
-#pass context
-#check for plant id and update
-#create routing functions
-#get from db
+
 
 
 @app.route("/api/v1/cropdata", methods=["POST"])
