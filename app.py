@@ -22,7 +22,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db.init_app(app)
 with app.app_context():
-    # db.drop_all()
     db.create_all()
 
 def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTemp, cropMinTemp, cropMaxTemp, minpH, maxpH, minCO2, maxCO2, lightExposureDuration, waterDepth, wateringInterval):
@@ -51,6 +50,21 @@ def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTe
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route("/db/activePlots", methods=["GET"])
+def getActivePlots():
+    activePlots = '';
+
+    # SELECT plot_num FROM growthreq
+    queryResult = db.session.execute(select(CropGrowthRequirements.plot_num))
+    plotsArray = queryResult.fetchall()
+    num_of_active_plots = len(plotsArray)
+
+    if (num_of_active_plots > 0):
+        for i in range(num_of_active_plots):
+            activePlots += str(plotsArray[i][0]);
+
+    return activePlots
 
 @app.route("/api/addCrop", methods=["POST"])
 def addCrop():
@@ -109,14 +123,6 @@ def editCrop():
 
 @app.route('/api/deleteCrop/<plotNum>', methods=['GET'])
 def deleteCrop(plotNum):
-    plot = CropGrowthRequirements.query.filter_by(plot_num=plotNum).first()
-
-    if plot:
-        db.session.delete(plot)
-        db.session.commit()
-    else:
-        print(f"Plot number {plotNum} does not exist")
-
     return redirect(url_for("index"))
 
 

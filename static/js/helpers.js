@@ -73,3 +73,19 @@ export function restartServer(serverNum, selectedServer) {
         }
     }, 3000);
 };
+
+
+
+// PLOT API
+export function loadActivePlots() {
+    const XHR = new XMLHttpRequest();
+    XHR.onreadystatechange = function () {
+        let response = XHR.responseText;
+
+        if (response.length > 0) {
+            console.log(response);
+        }
+    }
+    XHR.open('GET', '/db/activePlots', true);
+    XHR.send(null);
+};

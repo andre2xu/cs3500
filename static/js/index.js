@@ -10,7 +10,8 @@ import {
     loadServerMetrics,
     activateServer,
     deactivateServer,
-    restartServer
+    restartServer,
+    loadActivePlots
 } from './helpers.js';
 
 
@@ -19,8 +20,9 @@ let selectedServer = document.querySelector('[data-server-num="0"]');
 
 
 
-window.addEventListener('load', () => {
+window.addEventListener('load', (e) => {
     updateTemporalMetrics(CALENDAR, CLOCK);
+    loadActivePlots();
 
     setInterval(() => {
         updateTemporalMetrics(CALENDAR, CLOCK);
