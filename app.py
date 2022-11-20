@@ -25,25 +25,30 @@ with app.app_context():
     db.create_all()
 
 def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTemp, cropMinTemp, cropMaxTemp, minpH, maxpH, minCO2, maxCO2, lightExposureDuration, waterDepth, wateringInterval):
-    # validate all here (make sure to put them back into the same variables). PS: I already changed them into integers and floats
+    isValidData = True
+
+    # validate all here (make sure to put them back into the same variables). If ONE of the parameters has an incorrect value, change isValidData to False. NOTE: I already changed them into integers and floats.
 
 
 
-    return {
-        'plot_num':plotNum,
-        'days_for_growth':harvestCountdown,
-        'seed_min_temp':seedMinTemp,
-        'seed_max_temp':seedMaxTemp,
-        'crop_min_temp':cropMinTemp,
-        'crop_max_temp':cropMaxTemp,
-        'min_pH':minpH,
-        'max_pH':maxpH,
-        'min_co2':minCO2,
-        'max_co2':maxCO2,
-        'light_exp':lightExposureDuration,
-        'water_depth':waterDepth,
-        'watering_interval':wateringInterval
-    }
+    if isValidData:
+        return {
+            'plot_num':plotNum,
+            'days_for_growth':harvestCountdown,
+            'seed_min_temp':seedMinTemp,
+            'seed_max_temp':seedMaxTemp,
+            'crop_min_temp':cropMinTemp,
+            'crop_max_temp':cropMaxTemp,
+            'min_pH':minpH,
+            'max_pH':maxpH,
+            'min_co2':minCO2,
+            'max_co2':maxCO2,
+            'light_exp':lightExposureDuration,
+            'water_depth':waterDepth,
+            'watering_interval':wateringInterval
+        }
+    else:
+        return None
 
 
 
@@ -109,12 +114,15 @@ def addCrop():
     queryResult = db.session.execute(select(CropGrowthRequirements.plot_num).where(CropGrowthRequirements.plot_num == plotNum))
 
     if (queryResult.fetchone() == None):
-        newGrowthRequirements = CropGrowthRequirements(**validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval)))
+        validatedData = validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval))
 
-        db.session.add(newGrowthRequirements)
-        db.session.commit()
+        if type(validatedData) is dict: 
+            newGrowthRequirements = CropGrowthRequirements(**validatedData)
 
-        response = plotNum
+            db.session.add(newGrowthRequirements)
+            db.session.commit()
+
+            response = plotNum
 
     return response
 
@@ -139,10 +147,13 @@ def editCrop():
     queryResult = db.session.execute(select(CropGrowthRequirements.plot_num).where(CropGrowthRequirements.plot_num == plotNum))
 
     if (queryResult.fetchone() != None):
-        updateQuery = update(CropGrowthRequirements).where(CropGrowthRequirements.plot_num == plotNum).values(**validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval)))
+        validatedData = validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval))
 
-        db.session.execute(updateQuery)
-        db.session.commit()
+        if type(validatedData) is dict:
+            updateQuery = update(CropGrowthRequirements).where(CropGrowthRequirements.plot_num == plotNum).values(**validatedData)
+
+            db.session.execute(updateQuery)
+            db.session.commit()
 
     return ''
 
