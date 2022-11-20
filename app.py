@@ -66,6 +66,27 @@ def getActivePlots():
 
     return activePlots
 
+@app.route("/db/growthRequirements/<plotNum>", methods=["GET"])
+def getGrowthRequirements(plotNum):
+    queryResult = db.session.execute(select(['*']).where(CropGrowthRequirements.plot_num == plotNum))
+    growthRequirements = queryResult.fetchone()
+
+    response = ''
+
+    if growthRequirements != None:
+        response = {
+            'days': growthRequirements[1],
+            'seedTemperature': f'{growthRequirements[2]} - {growthRequirements[3]}',
+            'cropTemperature': f'{growthRequirements[4]} - {growthRequirements[5]}',
+            'pH': f'{growthRequirements[6]} - {growthRequirements[7]}',
+            'co2Concentration': f'{growthRequirements[8]} - {growthRequirements[9]}',
+            'lightExposureDuration': growthRequirements[10],
+            'waterDepth': growthRequirements[11],
+            'wateringInterval': growthRequirements[12]
+        }
+
+    return response
+
 @app.route("/api/addCrop", methods=["POST"])
 def addCrop():
     response = ''

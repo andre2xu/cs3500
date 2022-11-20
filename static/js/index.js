@@ -12,7 +12,8 @@ import {
     deactivateServer,
     restartServer,
     loadActivePlots,
-    deleteGrowthRequirements
+    deleteGrowthRequirements,
+    loadGrowthRequirements
 } from './helpers.js';
 
 
@@ -22,9 +23,11 @@ let selectedPlot = document.querySelector('[data-plot-num="0"]');
 
 
 
-window.addEventListener('load', (e) => {
+window.addEventListener('load', () => {
     updateTemporalMetrics(CALENDAR, CLOCK);
+
     loadActivePlots();
+    loadGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
 
     setInterval(() => {
         updateTemporalMetrics(CALENDAR, CLOCK);
@@ -105,7 +108,7 @@ window.addEventListener('load', (e) => {
 
             selectedPlot = plotListing;
 
-            // load plot metrics here
+            loadGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
         }
     });
 })
