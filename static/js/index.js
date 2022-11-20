@@ -128,7 +128,12 @@ window.addEventListener('load', () => {
 
             selectedPlot = plotListing;
 
-            loadGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
+            const SELECTED_PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1];
+
+            document.getElementById('addPlotNum').value = SELECTED_PLOT_NUM;
+            document.getElementById('editPlotNum').value = SELECTED_PLOT_NUM;
+
+            loadGrowthRequirements(SELECTED_PLOT_NUM);
         }
     });
 })
