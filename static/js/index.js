@@ -11,6 +11,7 @@ import {
     activateServer,
     deactivateServer,
     restartServer,
+    submitForm,
     loadActivePlots,
     deleteGrowthRequirements,
     loadGrowthRequirements
@@ -74,8 +75,25 @@ window.addEventListener('load', () => {
 
 
     // PLOT LIST
+    document.getElementById('addCropSubmitButton').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        submitForm(e.target.parentElement, '/api/addCrop', true);
+
+        loadGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
+    });
+
+    document.getElementById('editCropSubmitButton').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        submitForm(e.target.parentElement, '/api/editCrop', false);
+
+        loadGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
+    });
+
     document.getElementById('interfaceButtons').addEventListener('click', (e) => {
         const BUTTON = e.target.innerText;
+        const SELECTED_PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1]; 
 
         switch (BUTTON) {
             case 'Add':
@@ -88,7 +106,9 @@ window.addEventListener('load', () => {
                 break;
             case 'Delete':
                 if (selectedPlot.lastElementChild.classList.contains('green')) {
-                    deleteGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
+                    deleteGrowthRequirements(SELECTED_PLOT_NUM);
+
+                    loadGrowthRequirements(SELECTED_PLOT_NUM);
                 }
 
                 break;

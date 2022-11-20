@@ -85,6 +85,25 @@ export function restartServer(serverNum, selectedServer) {
 
 
 // PLOT API
+export function submitForm(form, url, getResponse) {
+    const XHR = new XMLHttpRequest();
+    XHR.open('POST', url, false);
+
+    if (getResponse) {
+        XHR.onreadystatechange = function () {
+            const RESPONSE = XHR.responseText;
+
+            if (RESPONSE.length === 1) {
+                document.querySelector(`[data-plot-num="${RESPONSE}"]`).lastElementChild.classList.replace('red', 'green');
+            }
+        };
+    }
+
+    XHR.send(new FormData(form));
+
+    form.classList.add('hidden');
+};
+
 export function loadActivePlots() {
     const XHR = new XMLHttpRequest();
     XHR.onreadystatechange = function () {
