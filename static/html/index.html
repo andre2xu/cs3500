@@ -10,7 +10,7 @@
   <title>Farm Automation System</title>
 </head>
 <body>
-  <form id="addCrop" action="/api/addCrop" method="post" class="crudInterface">
+  <form id="addCrop" action="/api/addCrop" method="post" class="crudInterface hidden">
     <button class="closeButton" type="button" onclick="this.parentElement.classList.add('hidden')">X</button>
 
     <div class="formBody">
@@ -18,62 +18,62 @@
 
       <div class="formField">
         <label for="addPlotNum">Plot number:</label>
-        <input id="addPlotNum" name="addPlotNum" type="number" min="0" max="10" value="0">
+        <input id="addPlotNum" name="plotNum" type="number" min="0" max="10" value="0">
       </div>
 
       <div class="formField">
         <label for="addHarvestCountdown">Days required for growth:</label>
-        <input id="addHarvestCountdown" name="addHarvestCountdown" type="number"  min="1" value="1">
+        <input id="addHarvestCountdown" name="harvestCountdown" type="number"  min="1" value="1">
       </div>
 
       <div class="formField">
         <label for="addSeedTemperature">Optimum seed temperature range (&deg;C):</label>
-        <input id="addSeedTemperature" name="addSeedTemperatureV1" type="number" min="-100" max="100" value="25">
+        <input id="addSeedTemperature" name="seedTemperatureV1" type="number" min="-100" max="100" value="25">
         <span>to</span>
-        <input type="number" name="addSeedTemperatureV2" min="-100" max="100" value="28">
+        <input type="number" name="seedTemperatureV2" min="-100" max="100" value="28">
       </div>
 
       <div class="formField">
         <label for="addCropTemperature">Optimum crop temperature range (&deg;C):</label>
-        <input id="addCropTemperature" name="addCropTemperatureV1" type="number" min="-100" max="100" value="25">
+        <input id="addCropTemperature" name="cropTemperatureV1" type="number" min="-100" max="100" value="25">
         <span>to</span>
-        <input type="number" name="addCropTemperatureV2" min="-100" max="100" value="28">
+        <input type="number" name="cropTemperatureV2" min="-100" max="100" value="28">
       </div>
 
       <div class="formField">
         <label for="addpH">Optimum pH range:</label>
-        <input id="addpH" name="addpHV1" type="number" min="0" max="14" value="5.5" step="0.1">
+        <input id="addpH" name="pHV1" type="number" min="0" max="14" value="5.5" step="0.1">
         <span>to</span>
-        <input type="number" name="addpHV2" min="0" max="14" value="7.0" step="0.1">
+        <input type="number" name="pHV2" min="0" max="14" value="7.0" step="0.1">
       </div>
 
       <div class="formField">
         <label for="addCO2">Optimum CO<sub>2</sub> range (ppm):</label>
-        <input id="addCO2" name="addCO2V1" type="number" min="1" max="1500" value="800">
+        <input id="addCO2" name="CO2V1" type="number" min="1" max="1500" value="800">
         <span>to</span>
-        <input type="number" name="addCO2V2" min="1" max="1500" value="1300">
+        <input type="number" name="CO2V2" min="1" max="1500" value="1300">
       </div>
 
       <div class="formField">
         <label for="addLightDuration">Light exposure (hrs):</label>
-        <input id="addLightDuration" name="addLightDuration" type="number" min="1" value="1">
+        <input id="addLightDuration" name="lightDuration" type="number" min="1" value="1">
       </div>
 
       <div class="formField">
         <label for="addWaterDepth">Depth of water required (inches):</label>
-        <input id="addWaterDepth" name="addWaterDepth" type="number" min="1" value="1">
+        <input id="addWaterDepth" name="waterDepth" type="number" min="1" value="1">
       </div>
 
       <div class="formField">
         <label for="addWateringInterval">Watering interval (hrs):</label>
-        <input id="addWateringInterval" name="addWateringInterval" type="number" min="1" value="1">
+        <input id="addWateringInterval" name="wateringInterval" type="number" min="1" value="1">
       </div>
     </div>
 
     <button type="submit" form="addCrop">Add</button>
   </form>
 
-  <form id="editCrop" action="#" method="post" class="crudInterface hidden">
+  <form id="editCrop" action="/api/editCrop" method="post" class="crudInterface hidden">
     <button class="closeButton" type="button" onclick="this.parentElement.classList.add('hidden')">X</button>
 
     <div class="formBody">
@@ -81,55 +81,55 @@
 
       <div class="formField">
         <label for="editPlotNum">Plot number:</label>
-        <input id="editPlotNum" name="editPlotNum" type="number" min="0" max="10" value="0">
+        <input id="editPlotNum" name="plotNum" type="number" min="0" max="10" value="0">
       </div>
 
       <div class="formField">
         <label for="editHarvestCountdown">Days required for growth:</label>
-        <input id="editHarvestCountdown" name="editHarvestCountdown" type="number" min="1" value="1">
+        <input id="editHarvestCountdown" name="harvestCountdown" type="number" min="1" value="1">
       </div>
 
       <div class="formField">
         <label for="editSeedTemperature">Optimum seed temperature range (&deg;C):</label>
-        <input id="editSeedTemperature" name="editSeedTemperatureV1" type="number" min="-100" max="100" value="25">
+        <input id="editSeedTemperature" name="seedTemperatureV1" type="number" min="-100" max="100" value="25">
         <span>to</span>
-        <input type="number" name="editSeedTemperatureV2" min="-100" max="100" value="28">
+        <input type="number" name="seedTemperatureV2" min="-100" max="100" value="28">
       </div>
 
       <div class="formField">
         <label for="editCropTemperature">Optimum crop temperature range (&deg;C):</label>
-        <input id="editCropTemperature" name="editCropTemperatureV1" type="number" min="-100" max="100" value="25">
+        <input id="editCropTemperature" name="cropTemperatureV1" type="number" min="-100" max="100" value="25">
         <span>to</span>
-        <input type="number" name="editCropTemperatureV2" min="-100" max="100" value="28">
+        <input type="number" name="cropTemperatureV2" min="-100" max="100" value="28">
       </div>
 
       <div class="formField">
         <label for="editpH">Optimum pH range:</label>
-        <input id="editpH" name="editpHV1" type="number" min="0" max="14" value="5.5" step="0.1">
+        <input id="editpH" name="pHV1" type="number" min="0" max="14" value="5.5" step="0.1">
         <span>to</span>
-        <input type="number" name="editpHV2" min="0" max="14" value="7.0" step="0.1">
+        <input type="number" name="pHV2" min="0" max="14" value="7.0" step="0.1">
       </div>
 
       <div class="formField">
         <label for="editCO2">Optimum CO<sub>2</sub> range (ppm):</label>
-        <input id="editCO2" name="editCO2V1" type="number" min="1" max="1500" value="800">
+        <input id="editCO2" name="CO2V1" type="number" min="1" max="1500" value="800">
         <span>to</span>
-        <input type="number" name="editCO2V2" min="1" max="1500" value="1300">
+        <input type="number" name="CO2V2" min="1" max="1500" value="1300">
       </div>
 
       <div class="formField">
         <label for="editLightDuration">Light exposure (hrs):</label>
-        <input id="editLightDuration" name="editLightDuration" type="number" min="1" value="1">
+        <input id="editLightDuration" name="lightDuration" type="number" min="1" value="1">
       </div>
 
       <div class="formField">
         <label for="editWaterDepth">Depth of water required (inches):</label>
-        <input id="editWaterDepth" name="editWaterDepth" type="number" min="1" value="1">
+        <input id="editWaterDepth" name="waterDepth" type="number" min="1" value="1">
       </div>
 
       <div class="formField">
         <label for="editWateringInterval">Watering interval (hrs):</label>
-        <input id="editWateringInterval" name="editWateringInterval" type="number" min="1" value="1">
+        <input id="editWateringInterval" name="wateringInterval" type="number" min="1" value="1">
       </div>
     </div>
 

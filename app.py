@@ -1,6 +1,7 @@
 import os, mimetypes
 from flask import Flask, request, render_template,redirect,url_for
 from Models import db, CropGrowthRequirements
+from sqlalchemy import select, update
 
 
 mimetypes.add_type('application/javascript', '.js')
@@ -21,7 +22,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db.init_app(app)
 with app.app_context():
-    db.drop_all()
+    # db.drop_all()
     db.create_all()
 
 def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTemp, cropMinTemp, cropMaxTemp, minpH, maxpH, minCO2, maxCO2, lightExposureDuration, waterDepth, wateringInterval):
@@ -53,26 +54,55 @@ def index():
 
 @app.route("/api/addCrop", methods=["POST"])
 def addCrop():
-    plotNum = request.form['addPlotNum']
-    harvestCountdown = request.form['addHarvestCountdown']
-    seedMinTemp = request.form['addSeedTemperatureV1']
-    seedMaxTemp = request.form['addSeedTemperatureV2']
-    cropMinTemp = request.form['addCropTemperatureV1']
-    cropMaxTemp = request.form['addCropTemperatureV2']
-    minpH = request.form['addpHV1']
-    maxpH = request.form['addpHV2']
-    minCO2 = request.form['addCO2V1']
-    maxCO2 = request.form['addCO2V2']
-    lightExposureDuration = request.form['addLightDuration']
-    waterDepth = request.form['addWaterDepth']
-    wateringInterval = request.form['addWateringInterval']
+    plotNum = request.form['plotNum']
+    harvestCountdown = request.form['harvestCountdown']
+    seedMinTemp = request.form['seedTemperatureV1']
+    seedMaxTemp = request.form['seedTemperatureV2']
+    cropMinTemp = request.form['cropTemperatureV1']
+    cropMaxTemp = request.form['cropTemperatureV2']
+    minpH = request.form['pHV1']
+    maxpH = request.form['pHV2']
+    minCO2 = request.form['CO2V1']
+    maxCO2 = request.form['CO2V2']
+    lightExposureDuration = request.form['lightDuration']
+    waterDepth = request.form['waterDepth']
+    wateringInterval = request.form['wateringInterval']
 
-    plotData = CropGrowthRequirements.query.filter_by(plot_num=plotNum).first()
+    # SELECT plot_num FROM growthreq WHERE plot_num = x
+    queryResult = db.session.execute(select(CropGrowthRequirements.plot_num).where(CropGrowthRequirements.plot_num == plotNum))
 
-    if (plotData == None):
+    if (queryResult.fetchone() == None):
         newGrowthRequirements = CropGrowthRequirements(**validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval)))
 
         db.session.add(newGrowthRequirements)
+        db.session.commit()
+
+    return redirect(url_for('index'))
+
+
+@app.route("/api/editCrop", methods=["POST"])
+def editCrop():
+    plotNum = request.form['plotNum']
+    harvestCountdown = request.form['harvestCountdown']
+    seedMinTemp = request.form['seedTemperatureV1']
+    seedMaxTemp = request.form['seedTemperatureV2']
+    cropMinTemp = request.form['cropTemperatureV1']
+    cropMaxTemp = request.form['cropTemperatureV2']
+    minpH = request.form['pHV1']
+    maxpH = request.form['pHV2']
+    minCO2 = request.form['CO2V1']
+    maxCO2 = request.form['CO2V2']
+    lightExposureDuration = request.form['lightDuration']
+    waterDepth = request.form['waterDepth']
+    wateringInterval = request.form['wateringInterval']
+
+    # SELECT plot_num FROM growthreq WHERE plot_num = x
+    queryResult = db.session.execute(select(CropGrowthRequirements.plot_num).where(CropGrowthRequirements.plot_num == plotNum))
+
+    if (queryResult.fetchone() != None):
+        updateQuery = update(CropGrowthRequirements).where(CropGrowthRequirements.plot_num == plotNum).values(**validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval)))
+
+        db.session.execute(updateQuery)
         db.session.commit()
 
     return redirect(url_for('index'))
