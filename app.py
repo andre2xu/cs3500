@@ -1,7 +1,7 @@
 import os, mimetypes
 from flask import Flask, request, render_template,redirect,url_for
 from Models import db, CropGrowthRequirements
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 
 
 mimetypes.add_type('application/javascript', '.js')
@@ -127,7 +127,10 @@ def editCrop():
 
 @app.route('/api/deleteCrop/<plotNum>', methods=['GET'])
 def deleteCrop(plotNum):
-    return redirect(url_for("index"))
+    CropGrowthRequirements.query.filter_by(plot_num=plotNum).delete()
+    db.session.commit()
+
+    return ''
 
 
 

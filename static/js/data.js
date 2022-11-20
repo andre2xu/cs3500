@@ -26,4 +26,4 @@ export const SERVER_METRICS = [
         variable: 'Soil moisture',
         status: 'ONLINE'
     }
-]
+];

@@ -653,6 +653,7 @@ body {
         display: flex;
         flex-direction: row;
         margin-bottom: 8%;
+        cursor: pointer;
 
         &.selected {
           color: $list_selection_clr;

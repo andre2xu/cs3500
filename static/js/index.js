@@ -11,12 +11,14 @@ import {
     activateServer,
     deactivateServer,
     restartServer,
-    loadActivePlots
+    loadActivePlots,
+    deleteGrowthRequirements
 } from './helpers.js';
 
 
 
 let selectedServer = document.querySelector('[data-server-num="0"]');
+let selectedPlot = document.querySelector('[data-plot-num="0"]');
 
 
 
@@ -30,6 +32,7 @@ window.addEventListener('load', (e) => {
 
 
 
+    // SERVER LIST
     document.getElementById('serverList').addEventListener('click', (e) => {
         let serverListing = e.target;
 
@@ -67,6 +70,7 @@ window.addEventListener('load', (e) => {
 
 
 
+    // PLOT LIST
     document.getElementById('interfaceButtons').addEventListener('click', (e) => {
         const BUTTON = e.target.innerText;
 
@@ -80,7 +84,28 @@ window.addEventListener('load', (e) => {
                 EDIT_FORM.classList.remove('hidden');
                 break;
             case 'Delete':
+                if (selectedPlot.lastElementChild.classList.contains('green')) {
+                    deleteGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
+                }
+
                 break;
+        }
+    });
+
+    document.getElementById('plotList').addEventListener('click', (e) => {
+        let plotListing = e.target;
+
+        if (plotListing.parentElement.hasAttribute('data-plot-num')) {
+            plotListing = plotListing.parentElement;
+        }
+
+        if (plotListing.hasAttribute('data-plot-num') && plotListing !== selectedPlot) {
+            plotListing.classList.add('selected');
+            selectedPlot.classList.remove('selected');
+
+            selectedPlot = plotListing;
+
+            // load plot metrics here
         }
     });
 })

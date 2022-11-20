@@ -92,3 +92,11 @@ export function loadActivePlots() {
     XHR.open('GET', '/db/activePlots', true);
     XHR.send(null);
 };
+
+export function deleteGrowthRequirements(plotNum) {
+    const XHR = new XMLHttpRequest();
+    XHR.open('GET', `/api/deleteCrop/${plotNum}`, false);
+    XHR.send(null);
+
+    document.querySelector(`[data-plot-num="${plotNum}"]`).lastElementChild.classList.replace('green', 'red');
+};
