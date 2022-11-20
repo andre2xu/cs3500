@@ -1,7 +1,6 @@
 import os, mimetypes
 from flask import Flask, request, render_template,redirect,url_for
-from Models import db, CropData
-
+from Models import db, CropGrowthRequirements
 
 
 mimetypes.add_type('application/javascript', '.js')
@@ -22,7 +21,29 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db.init_app(app)
 with app.app_context():
+    db.drop_all()
     db.create_all()
+
+def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTemp, cropMinTemp, cropMaxTemp, minpH, maxpH, minCO2, maxCO2, lightExposureDuration, waterDepth, wateringInterval):
+    # validate all here (make sure to put them back into the same variables). PS: I already changed them into integers and floats
+
+
+
+    return {
+        'plot_num':plotNum,
+        'days_for_growth':harvestCountdown,
+        'seed_min_temp':seedMinTemp,
+        'seed_max_temp':seedMaxTemp,
+        'crop_min_temp':cropMinTemp,
+        'crop_max_temp':cropMaxTemp,
+        'min_pH':minpH,
+        'max_pH':maxpH,
+        'min_co2':minCO2,
+        'max_co2':maxCO2,
+        'light_exp':lightExposureDuration,
+        'water_depth':waterDepth,
+        'watering_interval':wateringInterval
+    }
 
 
 
@@ -46,16 +67,19 @@ def addCrop():
     waterDepth = request.form['addWaterDepth']
     wateringInterval = request.form['addWateringInterval']
 
-    plotData = CropData.query.filter_by(plot_num=plotNum).first()
+    plotData = CropGrowthRequirements.query.filter_by(plot_num=plotNum).first()
 
     if (plotData == None):
-        pass # add plot data to database
+        newGrowthRequirements = CropGrowthRequirements(**validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval)))
+
+        db.session.add(newGrowthRequirements)
+        db.session.commit()
 
     return redirect(url_for('index'))
 
 @app.route('/api/deleteCrop/<plotNum>', methods=['GET'])
 def deleteCrop(plotNum):
-    plot = CropData.query.filter_by(plot_num=plotNum).first()
+    plot = CropGrowthRequirements.query.filter_by(plot_num=plotNum).first()
 
     if plot:
         db.session.delete(plot)

@@ -2,8 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class CropData(db.Model):
-    __tablename__ = "cropdata"
+class CropGrowthRequirements(db.Model):
+    __tablename__ = "growthreq"
 
     plot_num = db.Column(db.Integer, primary_key = True) 
     days_for_growth = db.Column(db.Integer, default = 0)
