@@ -68,6 +68,8 @@ def getActivePlots():
 
 @app.route("/api/addCrop", methods=["POST"])
 def addCrop():
+    response = ''
+
     plotNum = request.form['plotNum']
     harvestCountdown = request.form['harvestCountdown']
     seedMinTemp = request.form['seedTemperatureV1']
@@ -91,7 +93,9 @@ def addCrop():
         db.session.add(newGrowthRequirements)
         db.session.commit()
 
-    return redirect(url_for('index'))
+        response = plotNum
+
+    return response
 
 
 @app.route("/api/editCrop", methods=["POST"])
@@ -119,7 +123,7 @@ def editCrop():
         db.session.execute(updateQuery)
         db.session.commit()
 
-    return redirect(url_for('index'))
+    return ''
 
 @app.route('/api/deleteCrop/<plotNum>', methods=['GET'])
 def deleteCrop(plotNum):

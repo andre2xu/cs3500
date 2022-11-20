@@ -80,10 +80,13 @@ export function restartServer(serverNum, selectedServer) {
 export function loadActivePlots() {
     const XHR = new XMLHttpRequest();
     XHR.onreadystatechange = function () {
-        let response = XHR.responseText;
+        const RESPONSE = XHR.responseText;
+        const NUMBER_OF_PLOTS = RESPONSE.length;
 
-        if (response.length > 0) {
-            console.log(response);
+        if (NUMBER_OF_PLOTS > 0) {
+            for (let i=0; i < NUMBER_OF_PLOTS; i++) {
+                document.querySelector(`[data-plot-num="${RESPONSE[i]}"]`).lastElementChild.classList.replace('red', 'green');
+            }
         }
     }
     XHR.open('GET', '/db/activePlots', true);

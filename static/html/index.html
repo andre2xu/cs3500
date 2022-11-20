@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <button type="submit" form="addCrop">Add</button>
+    <button type="submit" form="addCrop" onclick="event.preventDefault(); submitForm(this.parentElement, '/api/addCrop', true);">Add</button>
   </form>
 
   <form id="editCrop" action="/api/editCrop" method="post" class="crudInterface hidden">
@@ -133,7 +133,7 @@
       </div>
     </div>
 
-    <button type="submit" form="editCrop">Change</button>
+    <button type="submit" form="editCrop" onclick="event.preventDefault(); submitForm(this.parentElement, '/api/editCrop');">Change</button>
   </form>
 
 
@@ -405,5 +405,26 @@
 
 
   <script src="{{ url_for('static', filename='js/index.js') }}" type="module"></script>
+
+  <script>
+    function submitForm(form, url, getResponse=false) {
+      const XHR = new XMLHttpRequest();
+      XHR.open('POST', url, false);
+
+      if (getResponse) {
+        XHR.onreadystatechange = function () {
+          const RESPONSE = XHR.responseText;
+
+          if (RESPONSE.length === 1) {
+            document.querySelector(`[data-plot-num="${RESPONSE}"]`).lastElementChild.classList.replace('red', 'green');
+          }
+        };
+      }
+
+      XHR.send(new FormData(form));
+
+      form.classList.add('hidden');
+    };
+  </script>
 </body>
 </html>
