@@ -24,8 +24,9 @@ class PlotSensorDataReceiver:
         change = randomFunc(changeMin, changeMax)
         newValue = round(metricToChange + change, 2)
 
-        # keeps new value for sensor variable within its scale (e.g. pH within 0-14) 
-        while (newValue < metricMin and newValue > metricMax):
+        # keeps new value for sensor variable within its scale (e.g. pH within 0-14)
+        while (newValue < metricMin or newValue > metricMax):
+            change = randomFunc(changeMin, changeMax)
             newValue = round(metricToChange + change, 2)
 
         setattr(self, metric, newValue)
