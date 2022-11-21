@@ -94,7 +94,8 @@ window.addEventListener('load', () => {
         // only loads growth requirements if it the newly added requirements are for the currently selected plot
         if (ADD_FORM.querySelector('#addPlotNum').value === SELECTED_PLOT_NUM) {
             loadGrowthRequirements(SELECTED_PLOT_NUM);
-            loadSensorData(SELECTED_PLOT_NUM)
+            loadSensorData(SELECTED_PLOT_NUM);
+            updateHarvestCountdown();
         }
     });
 
@@ -108,6 +109,7 @@ window.addEventListener('load', () => {
         // only loads growth requirements if it the updated requirements are for the currently selected plot
         if (EDIT_FORM.querySelector('#editPlotNum').value === SELECTED_PLOT_NUM) {
             loadGrowthRequirements(SELECTED_PLOT_NUM);
+            updateHarvestCountdown();
         }
     });
 
@@ -128,6 +130,11 @@ window.addEventListener('load', () => {
                 if (selectedPlot.lastElementChild.classList.contains('green')) {
                     deleteGrowthRequirements(SELECTED_PLOT_NUM);
                     loadSensorData(SELECTED_PLOT_NUM);
+
+                    if (window['harvestCountdown'] !== undefined) {
+                        delete window['harvestCountdown'];
+                        updateHarvestCountdown();
+                    }
                 }
 
                 break;
@@ -157,4 +164,4 @@ window.addEventListener('load', () => {
             loadSensorData(SELECTED_PLOT_NUM);
         }
     });
-})
+});
