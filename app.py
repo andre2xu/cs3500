@@ -96,14 +96,15 @@ def getGrowthRequirements(plotNum):
 
     if growthRequirements != None:
         response = {
-            'days': growthRequirements[1],
-            'seedTemperature': f'{growthRequirements[2]} - {growthRequirements[3]}',
-            'cropTemperature': f'{growthRequirements[4]} - {growthRequirements[5]}',
-            'pH': f'{growthRequirements[6]} - {growthRequirements[7]}',
-            'co2Concentration': f'{growthRequirements[8]} - {growthRequirements[9]}',
-            'lightExposureDuration': growthRequirements[10],
-            'waterDepth': growthRequirements[11],
-            'wateringInterval': growthRequirements[12]
+            'harvestDate': growthRequirements[1],
+            'days': growthRequirements[2],
+            'seedTemperature': f'{growthRequirements[3]} - {growthRequirements[4]}',
+            'cropTemperature': f'{growthRequirements[5]} - {growthRequirements[6]}',
+            'pH': f'{growthRequirements[7]} - {growthRequirements[8]}',
+            'co2Concentration': f'{growthRequirements[9]} - {growthRequirements[10]}',
+            'lightExposureDuration': growthRequirements[11],
+            'waterDepth': growthRequirements[12],
+            'wateringInterval': growthRequirements[13]
         }
 
     return response

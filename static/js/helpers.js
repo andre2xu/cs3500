@@ -1,4 +1,5 @@
 import {
+    HARVEST_COUNTDOWN,
     SERVER_METRICS,
     SERVER_METRICS_LIST,
     PLOT_GR_DAYS,
@@ -43,6 +44,30 @@ export function updateTemporalMetrics(calendar, clock) {
     calendar.innerText = `Date: ${day}/${month}/${year}`;
 
     clock.innerText = `Time: ${hrs}:${mins}`;
+};
+
+export function updateHarvestCountdown() {
+    if (window['harvestCountdown'] !== undefined) {
+        const CURRENT_DATE = new Date();
+        let daysLeft = window.harvestCountdown.getDate() - CURRENT_DATE.getDate();
+        let hrsLeft = 24 - CURRENT_DATE.getHours();
+        let minsLeft = 60 - CURRENT_DATE.getMinutes();
+
+        if (daysLeft < 10) {
+            daysLeft = `0${daysLeft}`;
+        }
+        if (hrsLeft < 10) {
+            hrsLeft = `0${hrsLeft}`;
+        }
+        if (minsLeft < 10) {
+            minsLeft = `0${minsLeft}`;
+        }
+
+        HARVEST_COUNTDOWN.innerText = `Harvest due in: ${daysLeft}d:${hrsLeft}h:${minsLeft}m`;
+    }
+    else {
+        HARVEST_COUNTDOWN.innerText = 'Harvest due in: 00d:00h:00m';
+    }
 };
 
 
@@ -147,8 +172,16 @@ export function loadGrowthRequirements(plotNum) {
         PLOT_GR_WATER_DEPTH.innerText = 'Water supply depth (in):';
         PLOT_GR_WATERING_INTERVAL.innerText = 'Watering interval (hrs):';
 
+        if (window['harvestCountdown'] !== undefined) {
+            delete window['harvestCountdown'];
+        }
+
         if (RESPONSE.length > 0) {
             const GROWTH_REQUIREMENTS = JSON.parse(RESPONSE);
+
+            if (window['harvestCountdown'] === undefined) {
+                window['harvestCountdown'] = new Date(GROWTH_REQUIREMENTS['harvestDate']);
+            }
 
             PLOT_GR_DAYS.innerText += ` ${GROWTH_REQUIREMENTS['days']}`;
 

@@ -1,5 +1,6 @@
 export const CALENDAR = document.getElementById('dynamicCalendar');
 export const CLOCK = document.getElementById('dynamicClock');
+export const HARVEST_COUNTDOWN = document.getElementById('harvestDate');
 export const ADD_FORM = document.getElementById('addCrop');
 export const EDIT_FORM = document.getElementById('editCrop');
 

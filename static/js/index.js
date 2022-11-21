@@ -7,6 +7,7 @@ import {
 
 import {
     updateTemporalMetrics,
+    updateHarvestCountdown,
     loadServerMetrics,
     activateServer,
     deactivateServer,
@@ -35,6 +36,7 @@ window.addEventListener('load', () => {
 
     setInterval(() => {
         updateTemporalMetrics(CALENDAR, CLOCK);
+        updateHarvestCountdown();
     }, 1000);
 
     setInterval(() => {
@@ -151,6 +153,7 @@ window.addEventListener('load', () => {
             document.getElementById('editPlotNum').value = SELECTED_PLOT_NUM;
 
             loadGrowthRequirements(SELECTED_PLOT_NUM);
+            updateHarvestCountdown();
             loadSensorData(SELECTED_PLOT_NUM);
         }
     });
