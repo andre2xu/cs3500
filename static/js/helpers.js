@@ -47,9 +47,9 @@ export function updateTemporalMetrics(calendar, clock) {
 };
 
 export function updateHarvestCountdown() {
-    if (window['harvestCountdown'] !== undefined) {
+    if (window.harvestDate !== null) {
         const CURRENT_DATE = new Date();
-        let daysLeft = window.harvestCountdown.getDate() - CURRENT_DATE.getDate();
+        let daysLeft = window.harvestDate.getDate() - CURRENT_DATE.getDate();
         let hrsLeft = 24 - CURRENT_DATE.getHours();
         let minsLeft = 60 - CURRENT_DATE.getMinutes();
 
@@ -163,42 +163,47 @@ export function loadGrowthRequirements(plotNum) {
     XHR.onreadystatechange = function () {
         const RESPONSE = XHR.responseText;
 
-        PLOT_GR_DAYS.innerText = 'Days:';
-        PLOT_GR_SEED_TEMPERATURE.innerText = 'Seed temperature (°C):';
-        PLOT_GR_CROP_TEMPERATURE.innerText = 'Crop temperature (°C):';
-        PLOT_GR_PH.innerText = 'pH:';
-        PLOT_GR_CO2_CONCENTRATION.innerHTML = 'CO<sub>2</sub> concentration (ppm):';
-        PLOT_GR_LIGHT_EXPOSURE.innerText = 'Light exposure duration (hrs):';
-        PLOT_GR_WATER_DEPTH.innerText = 'Water supply depth (in):';
-        PLOT_GR_WATERING_INTERVAL.innerText = 'Watering interval (hrs):';
+        let days = 'Days:';
+        let seedTemp = 'Seed temperature (°C):';
+        let cropTemp = 'Crop temperature (°C):';
+        let pH = 'pH:';
+        let co2 = 'CO<sub>2</sub> concentration (ppm):';
+        let lightExposureDuration = 'Light exposure duration (hrs):';
+        let waterDepth = 'Water supply depth (in):';
+        let wateringInterval = 'Watering interval (hrs):';
 
-        if (window['harvestCountdown'] !== undefined) {
-            delete window['harvestCountdown'];
-        }
+        window.harvestDate = null;
 
         if (RESPONSE.length > 0) {
             const GROWTH_REQUIREMENTS = JSON.parse(RESPONSE);
 
-            if (window['harvestCountdown'] === undefined) {
-                window['harvestCountdown'] = new Date(GROWTH_REQUIREMENTS['harvestDate']);
-            }
+            window.harvestDate = new Date(GROWTH_REQUIREMENTS['harvestDate']);
 
-            PLOT_GR_DAYS.innerText += ` ${GROWTH_REQUIREMENTS['days']}`;
+            days += ` ${GROWTH_REQUIREMENTS['days']}`;
 
-            PLOT_GR_SEED_TEMPERATURE.innerText += ` ${GROWTH_REQUIREMENTS['seedTemperature']}`;
+            seedTemp += ` ${GROWTH_REQUIREMENTS['seedTemperature']}`;
 
-            PLOT_GR_CROP_TEMPERATURE.innerText += ` ${GROWTH_REQUIREMENTS['cropTemperature']}`;
+            cropTemp += ` ${GROWTH_REQUIREMENTS['cropTemperature']}`;
 
-            PLOT_GR_PH.innerText += ` ${GROWTH_REQUIREMENTS['pH']}`;
+            pH += ` ${GROWTH_REQUIREMENTS['pH']}`;
 
-            PLOT_GR_CO2_CONCENTRATION.innerHTML += ` ${GROWTH_REQUIREMENTS['co2Concentration']}`;
+            co2 += ` ${GROWTH_REQUIREMENTS['co2Concentration']}`;
 
-            PLOT_GR_LIGHT_EXPOSURE.innerText += ` ${GROWTH_REQUIREMENTS['lightExposureDuration']}`;
+            lightExposureDuration += ` ${GROWTH_REQUIREMENTS['lightExposureDuration']}`;
 
-            PLOT_GR_WATER_DEPTH.innerText += ` ${GROWTH_REQUIREMENTS['waterDepth']}`;
+            waterDepth += ` ${GROWTH_REQUIREMENTS['waterDepth']}`;
 
-            PLOT_GR_WATERING_INTERVAL.innerText += ` ${GROWTH_REQUIREMENTS['wateringInterval']}`;
+            wateringInterval += ` ${GROWTH_REQUIREMENTS['wateringInterval']}`;
         }
+
+        PLOT_GR_DAYS.innerText = days;
+        PLOT_GR_SEED_TEMPERATURE.innerText = seedTemp;
+        PLOT_GR_CROP_TEMPERATURE.innerText = cropTemp;
+        PLOT_GR_PH.innerText = pH;
+        PLOT_GR_CO2_CONCENTRATION.innerHTML = co2;
+        PLOT_GR_LIGHT_EXPOSURE.innerText = lightExposureDuration;
+        PLOT_GR_WATER_DEPTH.innerText = waterDepth;
+        PLOT_GR_WATERING_INTERVAL.innerText = wateringInterval;
     }
     XHR.open('GET', `/db/growthRequirements/${plotNum}`, true);
     XHR.send(null);

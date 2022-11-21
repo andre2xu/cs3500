@@ -131,10 +131,8 @@ window.addEventListener('load', () => {
                     deleteGrowthRequirements(SELECTED_PLOT_NUM);
                     loadSensorData(SELECTED_PLOT_NUM);
 
-                    if (window['harvestCountdown'] !== undefined) {
-                        delete window['harvestCountdown'];
-                        updateHarvestCountdown();
-                    }
+                    window.harvestDate = null;
+                    updateHarvestCountdown();
                 }
 
                 break;
