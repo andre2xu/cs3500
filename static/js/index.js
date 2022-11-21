@@ -96,7 +96,7 @@ window.addEventListener('load', () => {
         const SELECTED_PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1];
 
         // only loads growth requirements if it the updated requirements are for the currently selected plot
-        if (EDIT_FORM.querySelector('#addPlotNum').value === SELECTED_PLOT_NUM) {
+        if (EDIT_FORM.querySelector('#editPlotNum').value === SELECTED_PLOT_NUM) {
             loadGrowthRequirements(SELECTED_PLOT_NUM);
         }
     });

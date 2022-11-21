@@ -165,3 +165,12 @@ export function loadGrowthRequirements(plotNum) {
     XHR.open('GET', `/db/growthRequirements/${plotNum}`, true);
     XHR.send(null);
 };
+
+export function loadSensorData(plotNum) {
+    const XHR = new XMLHttpRequest();
+    XHR.onreadystatechange = function () {
+        const RESPONSE = XHR.responseText;
+    }
+    XHR.open('GET', `/db/sensorData/${plotNum}`, true);
+    XHR.send(null);
+};

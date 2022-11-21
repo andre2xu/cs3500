@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -5,7 +6,8 @@ db = SQLAlchemy()
 class CropGrowthRequirements(db.Model):
     __tablename__ = "growthreq"
 
-    plot_num = db.Column(db.Integer, primary_key = True) 
+    plot_num = db.Column(db.Integer, primary_key = True)
+    harvest_date = db.Column(db.Date, default = date.today())
     days_for_growth = db.Column(db.Integer, default = 0)
     seed_min_temp = db.Column(db.Float, default = 0) # celsius
     seed_max_temp = db.Column(db.Float, default = 0) # celsius
@@ -27,6 +29,7 @@ class CropGrowthRequirements(db.Model):
 
     def __init__(self, plot_num, days_for_growth, seed_min_temp, seed_max_temp, crop_min_temp, crop_max_temp,min_pH, max_pH, min_co2, max_co2, light_exp, water_depth, watering_interval):
         self.plot_num = plot_num
+        self.harvest_date = date.today() + timedelta(days = days_for_growth)
         self.days_for_growth = days_for_growth
         self.seed_min_temp = seed_min_temp
         self.seed_max_temp = seed_max_temp

@@ -1,7 +1,7 @@
 import os, mimetypes
 from flask import Flask, request, render_template,redirect,url_for
 from Models import db, CropGrowthRequirements
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update
 
 
 mimetypes.add_type('application/javascript', '.js')
