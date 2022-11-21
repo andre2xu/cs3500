@@ -14,7 +14,8 @@ import {
     submitForm,
     loadActivePlots,
     deleteGrowthRequirements,
-    loadGrowthRequirements
+    loadGrowthRequirements,
+    loadSensorData
 } from './helpers.js';
 
 
@@ -27,12 +28,18 @@ let selectedPlot = document.querySelector('[data-plot-num="0"]');
 window.addEventListener('load', () => {
     updateTemporalMetrics(CALENDAR, CLOCK);
 
+    const PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1]
     loadActivePlots();
-    loadGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
+    loadGrowthRequirements(PLOT_NUM);
+    loadSensorData(PLOT_NUM);
 
     setInterval(() => {
         updateTemporalMetrics(CALENDAR, CLOCK);
     }, 1000);
+
+    setInterval(() => {
+        loadSensorData(selectedPlot.firstElementChild.innerText.split('#')[1]);
+    }, 3000);
 
 
 
@@ -144,6 +151,7 @@ window.addEventListener('load', () => {
             document.getElementById('editPlotNum').value = SELECTED_PLOT_NUM;
 
             loadGrowthRequirements(SELECTED_PLOT_NUM);
+            loadSensorData(SELECTED_PLOT_NUM);
         }
     });
 })

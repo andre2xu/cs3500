@@ -8,7 +8,12 @@ import {
     PLOT_GR_CO2_CONCENTRATION,
     PLOT_GR_LIGHT_EXPOSURE,
     PLOT_GR_WATER_DEPTH,
-    PLOT_GR_WATERING_INTERVAL
+    PLOT_GR_WATERING_INTERVAL,
+    PLOT_LIGHT_LEVELS,
+    PLOT_SOIL_TEMPERATURE,
+    PLOT_CO2_CONCENTRATION,
+    PLOT_SOIL_PH,
+    PLOT_SOIL_MOISTURE
 } from './data.js';
 
 
@@ -170,7 +175,23 @@ export function loadSensorData(plotNum) {
     const XHR = new XMLHttpRequest();
     XHR.onreadystatechange = function () {
         const RESPONSE = XHR.responseText;
+
+        PLOT_LIGHT_LEVELS.innerText = 'Light levels (lux):';
+        PLOT_SOIL_TEMPERATURE.innerText = 'Soil temperature (°C):';
+        PLOT_CO2_CONCENTRATION.innerHTML = 'CO<sub>2</sub> concentration (ppm):';
+        PLOT_SOIL_PH.innerText = 'Soil pH:';
+        PLOT_SOIL_MOISTURE.innerText = 'Soil moisture (%):';
+
+        if (RESPONSE.length > 0) {
+            const SENSOR_DATA = JSON.parse(RESPONSE);
+
+            PLOT_LIGHT_LEVELS.innerText += ` ${SENSOR_DATA['lighting']}`;
+            PLOT_SOIL_TEMPERATURE.innerText += ` ${SENSOR_DATA['soilTemp']}`;
+            PLOT_CO2_CONCENTRATION.innerText += ` ${SENSOR_DATA['co2']}`;
+            PLOT_SOIL_PH.innerText += ` ${SENSOR_DATA['pH']}`;
+            PLOT_SOIL_MOISTURE.innerText += ` ${SENSOR_DATA['moisture']}`;
+        }
     }
-    XHR.open('GET', `/db/sensorData/${plotNum}`, true);
+    XHR.open('GET', `/api/sensorData/${plotNum}`, true);
     XHR.send(null);
 };

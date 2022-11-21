@@ -53,8 +53,20 @@ def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTe
 
 
 
+SENSOR_DATA_GENERATORS = []
+
 @app.route('/')
 def index():
+    activePlots = getActivePlots()
+    num_of_plots = len(activePlots)
+
+    if num_of_plots > 0:
+        for i in range(num_of_plots):
+            sensorDataGenerator = PlotSensorDataReceiver(int(activePlots[i]))
+            sensorDataGenerator.listen()
+
+            SENSOR_DATA_GENERATORS.append(sensorDataGenerator)
+
     return render_template('index.html')
 
 @app.route("/db/activePlots", methods=["GET"])
@@ -93,6 +105,15 @@ def getGrowthRequirements(plotNum):
 
     return response
 
+@app.route("/api/sensorData/<plotNum>", methods=["GET"])
+def getSensorData(plotNum):
+    plotNum = int(plotNum)
+
+    if plotNum >= 0 and plotNum <= len(SENSOR_DATA_GENERATORS) - 1:
+        return SENSOR_DATA_GENERATORS[plotNum].getData()
+
+    return ''
+
 @app.route("/api/addCrop", methods=["POST"])
 def addCrop():
     response = ''
@@ -126,7 +147,6 @@ def addCrop():
             response = plotNum
 
     return response
-
 
 @app.route("/api/editCrop", methods=["POST"])
 def editCrop():
