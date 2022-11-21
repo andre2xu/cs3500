@@ -32,10 +32,11 @@ class PlotSensorDataReceiver:
         setattr(self, metric, newValue)
 
     def __collectNewData(self):
-        self.__generateChange(random.uniform, 'soil_temp', -2.0, 2.0, -30.0, 30.0)
-        self.__generateChange(random.uniform, 'soil_pH', -2.0, 2.0, 0.0, 14.0)
+        # generates changes to variables based on constraints
+        self.__generateChange(random.uniform, 'soil_temp', -0.8, 0.8, -30.0, 30.0)
+        self.__generateChange(random.uniform, 'soil_pH', -0.5, 0.5, 0.0, 14.0)
         self.__generateChange(random.uniform,'co2_concentration', -100.0, 100.0, 500.0, 2000.0)
-        self.__generateChange(random.uniform, 'soil_moisture', -2.0, 2.0, 0.0, 100.0)
+        self.__generateChange(random.uniform, 'soil_moisture', -0.5, 0.5, 0.0, 100.0)
         self.__generateChange(random.randint, 'light_levels', -100, 100, 0.0, 10000)
 
         self.listen() # repeats collection
