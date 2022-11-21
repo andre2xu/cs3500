@@ -92,6 +92,7 @@ window.addEventListener('load', () => {
         // only loads growth requirements if it the newly added requirements are for the currently selected plot
         if (ADD_FORM.querySelector('#addPlotNum').value === SELECTED_PLOT_NUM) {
             loadGrowthRequirements(SELECTED_PLOT_NUM);
+            loadSensorData(SELECTED_PLOT_NUM)
         }
     });
 
@@ -124,8 +125,7 @@ window.addEventListener('load', () => {
             case 'Delete':
                 if (selectedPlot.lastElementChild.classList.contains('green')) {
                     deleteGrowthRequirements(SELECTED_PLOT_NUM);
-
-                    loadGrowthRequirements(SELECTED_PLOT_NUM);
+                    loadSensorData(SELECTED_PLOT_NUM);
                 }
 
                 break;

@@ -53,7 +53,7 @@ def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTe
 
 
 
-SENSOR_DATA_GENERATORS = []
+SENSOR_DATA_GENERATORS = {}
 
 @app.route('/')
 def index():
@@ -62,10 +62,13 @@ def index():
 
     if num_of_plots > 0:
         for i in range(num_of_plots):
-            sensorDataGenerator = PlotSensorDataReceiver(int(activePlots[i]))
+            plotNum = activePlots[i]
+
+            sensorDataGenerator = PlotSensorDataReceiver(plotNum)
+            sensorDataGenerator.startListening()
             sensorDataGenerator.listen()
 
-            SENSOR_DATA_GENERATORS.append(sensorDataGenerator)
+            SENSOR_DATA_GENERATORS[plotNum] = sensorDataGenerator
 
     return render_template('index.html')
 
@@ -107,9 +110,7 @@ def getGrowthRequirements(plotNum):
 
 @app.route("/api/sensorData/<plotNum>", methods=["GET"])
 def getSensorData(plotNum):
-    plotNum = int(plotNum)
-
-    if plotNum >= 0 and plotNum <= len(SENSOR_DATA_GENERATORS) - 1:
+    if plotNum in SENSOR_DATA_GENERATORS:
         return SENSOR_DATA_GENERATORS[plotNum].getData()
 
     return ''
@@ -145,6 +146,12 @@ def addCrop():
             db.session.commit()
 
             response = plotNum
+
+            # activates sensors for plot
+            sensorDataGenerator = PlotSensorDataReceiver(plotNum)
+            sensorDataGenerator.startListening()
+            sensorDataGenerator.listen()
+            SENSOR_DATA_GENERATORS[plotNum] = sensorDataGenerator
 
     return response
 
@@ -182,6 +189,11 @@ def editCrop():
 def deleteCrop(plotNum):
     CropGrowthRequirements.query.filter_by(plot_num=plotNum).delete()
     db.session.commit()
+
+    SENSOR_DATA_GENERATORS[plotNum].stopListening()
+
+    if plotNum in SENSOR_DATA_GENERATORS:
+        del SENSOR_DATA_GENERATORS[plotNum]
 
     return ''
 

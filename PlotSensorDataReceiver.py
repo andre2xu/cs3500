@@ -2,7 +2,8 @@ import random, threading
 
 class PlotSensorDataReceiver:
     def __init__(self, plotNum):
-        self.plot_num = plotNum
+        self.plot_num = int(plotNum)
+        self.threadingIsActive = False
 
         # initializing crop variables with average values
         self.soil_temp = round(random.uniform(6.0, 8.0), 2) # celsius
@@ -29,6 +30,15 @@ class PlotSensorDataReceiver:
 
         setattr(self, metric, newValue)
 
+    def __collectNewData(self):
+        self.__generateChange(random.uniform, 'soil_temp', -2.0, 2.0, -30.0, 30.0)
+        self.__generateChange(random.uniform, 'soil_pH', -2.0, 2.0, 0.0, 14.0)
+        self.__generateChange(random.uniform,'co2_concentration', -100.0, 100.0, 500.0, 2000.0)
+        self.__generateChange(random.uniform, 'soil_moisture', -2.0, 2.0, 0.0, 100.0)
+        self.__generateChange(random.randint, 'light_levels', -100, 100, 0.0, 10000)
+
+        self.listen() # repeats collection
+
 
     # GETTERS
     def getData(self):
@@ -45,15 +55,13 @@ class PlotSensorDataReceiver:
 
 
     # SETTERS
-    def collectNewData(self):
-        self.__generateChange(random.uniform, 'soil_temp', -2.0, 2.0, -30.0, 30.0)
-        self.__generateChange(random.uniform, 'soil_pH', -2.0, 2.0, 0.0, 14.0)
-        self.__generateChange(random.uniform,'co2_concentration', -100.0, 100.0, 500.0, 2000.0)
-        self.__generateChange(random.uniform, 'soil_moisture', -2.0, 2.0, 0.0, 100.0)
-        self.__generateChange(random.randint, 'light_levels', -100, 100, 0.0, 10000)
+    def startListening(self):
+        self.threadingIsActive = True
 
-        self.listen() # repeats collection
+    def stopListening(self):
+        self.threadingIsActive = False
 
     def listen(self):
-        sensorThread = threading.Timer(1.0, self.collectNewData)
-        sensorThread.start()
+        if (self.threadingIsActive):
+            sensorThread = threading.Timer(1.0, self.__collectNewData)
+            sensorThread.start()
