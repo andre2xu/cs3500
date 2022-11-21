@@ -78,17 +78,27 @@ window.addEventListener('load', () => {
     document.getElementById('addCropSubmitButton').addEventListener('click', (e) => {
         e.preventDefault();
 
-        submitForm(e.target.parentElement, '/api/addCrop', true);
+        submitForm(ADD_FORM, '/api/addCrop', true);
 
-        loadGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
+        const SELECTED_PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1];
+
+        // only loads growth requirements if it the newly added requirements are for the currently selected plot
+        if (ADD_FORM.querySelector('#addPlotNum').value === SELECTED_PLOT_NUM) {
+            loadGrowthRequirements(SELECTED_PLOT_NUM);
+        }
     });
 
     document.getElementById('editCropSubmitButton').addEventListener('click', (e) => {
         e.preventDefault();
 
-        submitForm(e.target.parentElement, '/api/editCrop', false);
+        submitForm(EDIT_FORM, '/api/editCrop', false);
 
-        loadGrowthRequirements(selectedPlot.firstElementChild.innerText.split('#')[1]);
+        const SELECTED_PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1];
+
+        // only loads growth requirements if it the updated requirements are for the currently selected plot
+        if (EDIT_FORM.querySelector('#addPlotNum').value === SELECTED_PLOT_NUM) {
+            loadGrowthRequirements(SELECTED_PLOT_NUM);
+        }
     });
 
     document.getElementById('interfaceButtons').addEventListener('click', (e) => {
