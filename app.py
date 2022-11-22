@@ -60,7 +60,7 @@ def index():
     activePlots = getActivePlots()
     num_of_plots = len(activePlots)
 
-    if num_of_plots > 0:
+    if num_of_plots > 0 and len(SENSOR_DATA_GENERATORS) == 0:
         for i in range(num_of_plots):
             plotNum = activePlots[i]
 
