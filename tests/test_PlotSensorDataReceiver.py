@@ -1,8 +1,10 @@
-import unittest
-from PlotSensorDataReceiver import PlotSensorDataReceiver
+import sys
+sys.path.append('../')
 
-class TestPlotSensorDataReceiver(unittest.TestCase):
-    def test_plotNum(self):
-        self.assertRaises(ValueError, PlotSensorDataReceiver, "String") # String
-        self.assertRaises(ValueError, PlotSensorDataReceiver, -1) # Neg Int
-        self.assertRaises(ValueError, PlotSensorDataReceiver, True) # Boolean
+import flask_unittest
+
+from flask import Flask
+
+class TestPlotSensorDataReceiver(flask_unittest.AppClientTestCase):
+    def create_app(self):
+        return Flask(__name__)
