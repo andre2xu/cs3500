@@ -5,6 +5,7 @@ import flask_unittest
 
 from Models import CropGrowthRequirements, db
 from flask import Flask
+from sqlalchemy import select
 
 class TestModels(flask_unittest.AppClientTestCase):
     def create_app(self):
@@ -40,14 +41,76 @@ class TestModels(flask_unittest.AppClientTestCase):
 
     def tearDown(self, app, client):
         with app.app_context():
-            CropGrowthRequirements.query.delete() # deletes all rows
+            CropGrowthRequirements.query.delete() # Deletes all rows
             db.session.commit()
 
     def test_selectAll(self, app, client):
-        pass
+        with app.app_context():
+            crops = db.session.execute(select(['*']).where(CropGrowthRequirements.plot_num >= 1)).fetchall()
+            for crop in crops:
+                self.assertAlmostEquals(crop[1], 1)
+                self.assertGreaterEqual(crop[1], 0)
+                self.assertAlmostEquals(crop[2], 10)
+                self.assertGreaterEqual(crop[2], -30)
+                self.assertLessEqual(crop[2], 200)
+                self.assertAlmostEquals(crop[3], 60)
+                self.assertGreaterEqual(crop[3], -30)
+                self.assertLessEqual(crop[3], 200)
+                self.assertAlmostEquals(crop[4], 10)
+                self.assertGreaterEqual(crop[4], -30)
+                self.assertLessEqual(crop[4], 200)
+                self.assertAlmostEquals(crop[5], 60)
+                self.assertGreaterEqual(crop[5], -30)
+                self.assertLessEqual(crop[5], 200)
+                self.assertAlmostEquals(crop[6], 7)
+                self.assertGreaterEqual(crop[6], 0)
+                self.assertLessEqual(crop[6], 14)
+                self.assertAlmostEquals(crop[7], 7)
+                self.assertGreaterEqual(crop[7], 0)
+                self.assertLessEqual(crop[7], 14)
+                self.assertAlmostEquals(crop[8], 900)
+                self.assertGreaterEqual(crop[8], 600)
+                self.assertLessEqual(crop[8], 1500)
+                self.assertAlmostEquals(crop[9], 900)
+                self.assertGreaterEqual(crop[9], 600)
+                self.assertLessEqual(crop[9], 1500)
+                self.assertAlmostEquals(crop[10], 50)
+                self.assertGreaterEqual(crop[10], 0)
+                self.assertLessEqual(crop[10], 100)
+                self.assertAlmostEquals(crop[11], 2)
+                self.assertGreaterEqual(crop[11], 0)
+                self.assertLessEqual(crop[11], 6)
+                self.assertAlmostEquals(crop[12], 6)
+                self.assertGreaterEqual(crop[12, 0.5])
+                self.assertLessEqual(crop[12], 48)
 
     def test_insert(self, app, client):
-        pass
+        with app.app_context():
+            data = {
+                'plot_num': 1,
+                'days_for_growth': 12,
+                'seed_min_temp': 10,
+                'seed_max_temp': 60,
+                'crop_min_temp': 10,
+                'crop_max_temp': 70,
+                'min_pH': 6,
+                'max_pH': 9,
+                'min_co2': 800,
+                'max_co2': 1000,
+                'light_exp': 100,
+                'water_depth': 1,
+                'watering_interval': 12
+            }
+            db.session.add(CropGrowthRequirements(data['plot_num'], data['days_for_growth'], data['seed_min_temp'], data['seed_max_temp'], data['crop_min_temp'], data['crop_max_temp'], data['min_pH'], data['max_pH'], data['min_co2'], data['max_co2'], data['light_exp'], data['water_depth'], data['watering_interval']))
+            db.session.commit
+            check = db.session.execute(select(['*']).where(CropGrowthRequirements.plot_num == data['plot_num'])).fetchall()
+            for i in check:
+                self.assertAlmostEquals(check, data[i]) # Iterate through the database checking if the data was inserted correctly.
+
 
     def test_delete(self, app, client):
-        pass
+        with app.app_context():
+            CropGrowthRequirements.query.filter_by(plot_num=1).delete()
+            db.session.commit()
+            check = db.session.execute(select(['*'])).fetchall()
+            self.assertIsNotNone(check)
