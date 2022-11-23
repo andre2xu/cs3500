@@ -155,6 +155,15 @@ export function deleteGrowthRequirements(plotNum) {
     XHR.open('GET', `/api/deleteCrop/${plotNum}`, false);
     XHR.send(null);
 
+    PLOT_GR_DAYS.innerText = 'Days:';
+    PLOT_GR_SEED_TEMPERATURE.innerText = 'Seed temperature (°C):';
+    PLOT_GR_CROP_TEMPERATURE.innerText = 'Crop temperature (°C):';
+    PLOT_GR_PH.innerText = 'pH:'
+    PLOT_GR_CO2_CONCENTRATION.innerHTML = 'CO<sub>2</sub> concentration (ppm):';
+    PLOT_GR_LIGHT_EXPOSURE.innerText = 'Light exposure duration (hrs):';
+    PLOT_GR_WATER_DEPTH.innerText = 'Water supply depth (in):';
+    PLOT_GR_WATERING_INTERVAL.innerText = 'Watering interval (hrs):';
+
     document.querySelector(`[data-plot-num="${plotNum}"]`).lastElementChild.classList.replace('green', 'red');
 };
 
