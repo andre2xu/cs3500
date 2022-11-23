@@ -29,8 +29,24 @@ def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTe
     isValidData = True
 
     # validate all here (make sure to put them back into the same variables). If ONE of the parameters has an incorrect value, change isValidData to False. NOTE: I already changed them into integers and floats.
-
-
+    if plotNum < 0 or plotNum > 10: 
+        isValidData = False
+    elif  harvestCountdown < 1:
+        isValidData = False
+    elif seedMinTemp < -100 or seedMaxTemp > 100 or seedMinTemp > seedMaxTemp:
+        isValidData = False
+    elif cropMinTemp < -100 or cropMaxTemp > 100 or cropMinTemp > cropMaxTemp:
+        isValidData = False 
+    elif minpH < 0 or maxpH > 14 or minpH > maxpH:
+        isValidData = False
+    elif minCO2 < 1 or maxCO2 > 1500 or minCO2 > maxCO2:
+        isValidData = False
+    elif lightExposureDuration < 1:
+        isValidData = False
+    elif waterDepth < 1:
+        isValidData = False
+    elif wateringInterval < 1:
+        isValidData = False
 
     if isValidData:
         return {
