@@ -1,4 +1,4 @@
-CURRENTLY WORKING PARTS OF THE UI:
+# CURRENTLY WORKING PARTS OF THE UI:
 - Date and time metrics under the map (black box)
 - Server list indicator lights
 - Server metrics
@@ -7,9 +7,9 @@ CURRENTLY WORKING PARTS OF THE UI:
 - Plot metrics
 - Buttons to add, edit, and delete growth requirements for plots
 - Harvest countdown
-
-
-HOW IT WORKS:
+<br>
+<br>
+# HOW IT WORKS:
 When the UI is rendered by the backend, JavaScript immediately does 4 things: it loads the current date and time; it loads the growth requirements (if any exists in the database) of plot 0; it "activates" all the plots that have growth requirements stored in the database (it turns their indicator lights green); it asks the backend for plot 0's sensor data, and after receiving them, it puts them into their respective variables in the metrics list. 
 
 JavaScript will re-calculate the current date & time, and the harvest countdown for the currently selected plot, every second. 
