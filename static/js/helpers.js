@@ -53,13 +53,24 @@ export function updateHarvestCountdown() {
         let hrsLeft = 24 - CURRENT_DATE.getHours();
         let minsLeft = 60 - CURRENT_DATE.getMinutes();
 
-        if (daysLeft < 10) {
+        if (daysLeft < 0) {
+            daysLeft = '00';
+        }
+        else if (daysLeft < 10) {
             daysLeft = `0${daysLeft}`;
         }
-        if (hrsLeft < 10) {
+
+        if (hrsLeft < 0) {
+            hrsLeft = '00';
+        }
+        else if (hrsLeft < 10) {
             hrsLeft = `0${hrsLeft}`;
         }
-        if (minsLeft < 10) {
+
+        if (minsLeft < 0) {
+            minsLeft = '00';
+        }
+        else if (minsLeft < 10) {
             minsLeft = `0${minsLeft}`;
         }
 
