@@ -162,4 +162,22 @@ window.addEventListener('load', () => {
             loadSensorData(SELECTED_PLOT_NUM);
         }
     });
+
+
+
+    // SWITCHES
+    document.getElementById('inputSwitches').addEventListener('click', (e) => {
+        const ELEMENT_CLICKED = e.target;
+
+        if (ELEMENT_CLICKED.classList.contains('switch')) {
+            const SWITCH = ELEMENT_CLICKED.parentElement;
+            const INPUT_ELEMENTS = SWITCH.querySelectorAll('input');
+
+            switch (SWITCH.id) {
+                case 'sprinklers':
+                    console.log(INPUT_ELEMENTS);
+                    break;
+            }
+        }
+    });
 });
