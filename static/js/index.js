@@ -29,7 +29,7 @@ let selectedPlot = document.querySelector('[data-plot-num="0"]');
 window.addEventListener('load', () => {
     updateTemporalMetrics(CALENDAR, CLOCK);
 
-    const PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1]
+    const PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1];
     loadActivePlots();
     loadGrowthRequirements(PLOT_NUM);
     loadSensorData(PLOT_NUM);

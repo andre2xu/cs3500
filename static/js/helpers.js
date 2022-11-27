@@ -14,7 +14,8 @@ import {
     PLOT_SOIL_TEMPERATURE,
     PLOT_CO2_CONCENTRATION,
     PLOT_SOIL_PH,
-    PLOT_SOIL_MOISTURE
+    PLOT_SOIL_MOISTURE,
+    SENSOR_DATA_DISPLAY_STATUS
 } from './data.js';
 
 
@@ -91,11 +92,32 @@ export function loadServerMetrics(serverNum) {
     SERVER_METRICS_LIST[1].innerText = `Status: ${METRICS['status']}`;
 };
 
+export function toggleSensorVariableCollection(serverNum) {
+    switch (serverNum) {
+        case '0':
+            SENSOR_DATA_DISPLAY_STATUS['lightLevels'] = (SENSOR_DATA_DISPLAY_STATUS['lightLevels'] ? false : true); 
+            break;
+        case '1':
+            SENSOR_DATA_DISPLAY_STATUS['soilTemp'] = (SENSOR_DATA_DISPLAY_STATUS['soilTemp'] ? false : true); 
+            break;
+        case '2':
+            SENSOR_DATA_DISPLAY_STATUS['co2'] = (SENSOR_DATA_DISPLAY_STATUS['co2'] ? false : true); 
+            break;
+        case '3':
+            SENSOR_DATA_DISPLAY_STATUS['pH'] = (SENSOR_DATA_DISPLAY_STATUS['pH'] ? false : true); 
+            break;
+        case '4':
+            SENSOR_DATA_DISPLAY_STATUS['soilMoisture'] = (SENSOR_DATA_DISPLAY_STATUS['soilMoisture'] ? false : true); 
+            break;
+    }
+};
+
 export function activateServer(serverNum, selectedServer) {
     SERVER_METRICS[serverNum]['status'] = 'ONLINE';
 
     selectedServer.lastElementChild.classList.replace('red', 'green');
 
+    toggleSensorVariableCollection(serverNum);
     loadServerMetrics(serverNum);
 };
 
@@ -104,6 +126,7 @@ export function deactivateServer(serverNum, selectedServer) {
 
     selectedServer.lastElementChild.classList.replace('green', 'red');
 
+    toggleSensorVariableCollection(serverNum);
     loadServerMetrics(serverNum);
 };
 
@@ -111,16 +134,20 @@ export function restartServer(serverNum, selectedServer) {
     SERVER_METRICS[serverNum]['status'] = 'RESTARTING';
 
     selectedServer.lastElementChild.classList.replace('green', 'red');
+
+    toggleSensorVariableCollection(serverNum);
     loadServerMetrics(serverNum);
 
     setTimeout(() => {
         selectedServer.lastElementChild.classList.replace('red', 'green');
         SERVER_METRICS[serverNum]['status'] = 'ONLINE';
 
+        toggleSensorVariableCollection(serverNum);
+
         if (selectedServer.classList.contains('selected')) {
             loadServerMetrics(serverNum);
         }
-    }, 3000);
+    }, 10000);
 };
 
 
@@ -243,11 +270,21 @@ export function loadSensorData(plotNum) {
         if (RESPONSE.length > 0) {
             const SENSOR_DATA = JSON.parse(RESPONSE);
 
-            PLOT_LIGHT_LEVELS.innerText += ` ${SENSOR_DATA['lighting']}`;
-            PLOT_SOIL_TEMPERATURE.innerText += ` ${SENSOR_DATA['soilTemp']}`;
-            PLOT_CO2_CONCENTRATION.innerText += ` ${SENSOR_DATA['co2']}`;
-            PLOT_SOIL_PH.innerText += ` ${SENSOR_DATA['pH']}`;
-            PLOT_SOIL_MOISTURE.innerText += ` ${SENSOR_DATA['moisture']}`;
+            if (SENSOR_DATA_DISPLAY_STATUS['lightLevels'] === true) {
+                PLOT_LIGHT_LEVELS.innerText += ` ${SENSOR_DATA['lighting']}`;
+            }
+            if (SENSOR_DATA_DISPLAY_STATUS['soilTemp'] === true) {
+                PLOT_SOIL_TEMPERATURE.innerText += ` ${SENSOR_DATA['soilTemp']}`;
+            }
+            if (SENSOR_DATA_DISPLAY_STATUS['co2'] === true) {
+                PLOT_CO2_CONCENTRATION.innerText += ` ${SENSOR_DATA['co2']}`;
+            }
+            if (SENSOR_DATA_DISPLAY_STATUS['pH'] === true) {
+                PLOT_SOIL_PH.innerText += ` ${SENSOR_DATA['pH']}`;
+            }
+            if (SENSOR_DATA_DISPLAY_STATUS['soilMoisture'] === true) {
+                PLOT_SOIL_MOISTURE.innerText += ` ${SENSOR_DATA['moisture']}`;
+            }
         }
     }
     XHR.open('GET', `/api/sensorData/${plotNum}`, true);

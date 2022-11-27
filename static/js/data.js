@@ -60,3 +60,13 @@ export const PLOT_GR_CO2_CONCENTRATION = PLOT_METRICS_LIST.querySelector('[data-
 export const PLOT_GR_LIGHT_EXPOSURE = PLOT_METRICS_LIST.querySelector('[data-gr-light-exposure]');
 export const PLOT_GR_WATER_DEPTH = PLOT_METRICS_LIST.querySelector('[data-gr-water-depth]');
 export const PLOT_GR_WATERING_INTERVAL = PLOT_METRICS_LIST.querySelector('[data-gr-watering-interval]');
+
+
+
+export const SENSOR_DATA_DISPLAY_STATUS = {
+    lightLevels: true,
+    soilTemp: true,
+    co2: true,
+    pH: true,
+    soilMoisture: true
+};
