@@ -50,7 +50,7 @@ export function updateTemporalMetrics(calendar, clock) {
 export function updateHarvestCountdown() {
     if (window.harvestDate !== null) {
         const CURRENT_DATE = new Date();
-        let daysLeft = window.harvestDate.getDate() - CURRENT_DATE.getDate();
+        let daysLeft = Math.round(Math.abs(window.harvestDate - CURRENT_DATE) / 8.64e+7);
         let hrsLeft = 24 - CURRENT_DATE.getHours();
         let minsLeft = 60 - CURRENT_DATE.getMinutes();
 
