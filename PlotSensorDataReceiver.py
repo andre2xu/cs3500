@@ -14,10 +14,11 @@ class PlotSensorDataReceiver:
         self.threadingIsActive = False
         self.timeReceiverStartedCollecting = time.time()
 
-        self.sprinklerStatus = 1
-        self.sprinklerDuration = 1 
+        self.sprinklerStatus = 0 # 0 = OFF / 1 = ON
+        self.sprinklerDuration = 0 # seconds
 
         self.requiredMoisture = (float(growthRequirements['waterDepth']) / 8.0) * 100
+        self.wateringInterval = int(growthRequirements['wateringInterval'] * 3600)
 
 
 
@@ -25,8 +26,7 @@ class PlotSensorDataReceiver:
         self.soil_temp = round(random.uniform(6.0, 8.0), 2) # celsius
         self.soil_pH = round(random.uniform(6.0, 7.0), 2) # pH scale
         self.co2_concentration = round(random.uniform(400.0, 500.0), 2) # ppm
-        self.soil_moisture = self.requiredMoisture # %
-        self.soil_moisture = 0
+        self.soil_moisture = round(random.uniform(8.0, 10.0), 2) # %
         self.light_levels = random.randint(9000, 10000) # lux
 
     def __str__(self):
@@ -61,11 +61,21 @@ class PlotSensorDataReceiver:
         if self.sprinklerDuration == 0:
             self.sprinklerStatus = 0 # turns off sprinkler
 
-        if self.sprinklerStatus == 0 and int(time.time() - self.timeReceiverStartedCollecting) % 5 == 0:
-            self.__generateChange(random.uniform, 'soil_moisture', -0.05, 0.0, 0.0, self.requiredMoisture + 3.0)
+        currentElapsedTime = int(time.time() - self.timeReceiverStartedCollecting)
+
+        # handles watering interval
+        if self.sprinklerStatus == 0 and currentElapsedTime % self.wateringInterval == 0 and self.soil_moisture < 1.0:
+            self.sprinklerStatus = 1
+            self.sprinklerDuration = int(self.requiredMoisture / 12.5)
+
+        if self.sprinklerStatus == 0 and currentElapsedTime % 5 == 0:
+            # decreases soil moisture by 0% to 0.05% every 5 seconds
+            self.__generateChange(random.uniform, 'soil_moisture', -0.05, 0.0, 0.0, 100.0)
         elif self.sprinklerStatus == 1 and self.sprinklerDuration > 0:
-            self.soil_moisture += 12.5 # 1" of water
+            # NOTE: receivers collect new data every second (see above to understand why this info is important)
+            self.soil_moisture += 12.5
             self.sprinklerDuration -= 1
+
 
 
         self.listen() # repeats collection
