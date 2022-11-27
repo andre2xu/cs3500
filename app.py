@@ -79,7 +79,7 @@ def index():
         for i in range(num_of_plots):
             plotNum = activePlots[i]
 
-            sensorDataGenerator = PlotSensorDataReceiver(plotNum)
+            sensorDataGenerator = PlotSensorDataReceiver(plotNum, getGrowthRequirements(plotNum))
             sensorDataGenerator.startListening()
             sensorDataGenerator.listen()
 
