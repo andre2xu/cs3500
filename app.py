@@ -136,9 +136,10 @@ def handleSwitch():
     switchData = request.get_json()
 
     componentsToTurnOn = ''
+    plotNum = switchData['plotNum']
 
-    if 'sprinklerDuration' in switchData and 'pH' in switchData:
-        receiverInstance = SENSOR_DATA_GENERATORS[switchData['plotNum']]
+    if 'sprinklerDuration' in switchData and 'pH' in switchData and plotNum in SENSOR_DATA_GENERATORS:
+        receiverInstance = SENSOR_DATA_GENERATORS[plotNum]
         duration = int(switchData['sprinklerDuration'])
 
         receiverInstance.activateSprinkler(duration)
