@@ -16,7 +16,8 @@ import {
     loadActivePlots,
     deleteGrowthRequirements,
     loadGrowthRequirements,
-    loadSensorData
+    loadSensorData,
+    updateSwitches
 } from './helpers.js';
 
 
@@ -160,6 +161,7 @@ window.addEventListener('load', () => {
             loadGrowthRequirements(SELECTED_PLOT_NUM);
             updateHarvestCountdown();
             loadSensorData(SELECTED_PLOT_NUM);
+            updateSwitches(SELECTED_PLOT_NUM);
         }
     });
 

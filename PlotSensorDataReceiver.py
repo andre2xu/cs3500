@@ -57,7 +57,7 @@ class PlotSensorDataReceiver:
 
 
 
-        ### SOIL MOISTURE ###
+        ### SOIL MOISTURE & SOIL PH ###
         if self.sprinklerDuration == 0:
             self.sprinklerStatus = 0 # turns off sprinkler
 
@@ -65,8 +65,7 @@ class PlotSensorDataReceiver:
 
         # handles watering interval
         if self.sprinklerStatus == 0 and currentElapsedTime % self.wateringInterval == 0 and self.soil_moisture < 1.0:
-            self.sprinklerStatus = 1
-            self.sprinklerDuration = int(self.requiredMoisture / 12.5)
+            self.activateSprinkler(int(self.requiredMoisture / 12.5))
 
         if self.sprinklerStatus == 0 and currentElapsedTime % 5 == 0:
             # decreases soil moisture by 0% to 0.05% every 5 seconds
@@ -106,3 +105,7 @@ class PlotSensorDataReceiver:
         if (self.threadingIsActive):
             sensorThread = threading.Timer(1.0, self.__collectNewData)
             sensorThread.start()
+
+    def activateSprinkler(self, duration:int):
+        self.sprinklerStatus = 1
+        self.sprinklerDuration = duration

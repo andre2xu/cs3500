@@ -2,6 +2,7 @@ import {
     HARVEST_COUNTDOWN,
     SERVER_METRICS,
     SERVER_METRICS_LIST,
+    SWITCH_TARGETS,
     PLOT_GR_DAYS,
     PLOT_GR_SEED_TEMPERATURE,
     PLOT_GR_CROP_TEMPERATURE,
@@ -289,4 +290,15 @@ export function loadSensorData(plotNum) {
     }
     XHR.open('GET', `/api/sensorData/${plotNum}`, true);
     XHR.send(null);
+};
+
+
+
+// SWITCHES
+export function updateSwitches(newPlotNum) {
+    const NUM_OF_TARGETS = SWITCH_TARGETS.length;
+
+    for (let i=0; i < NUM_OF_TARGETS; i++) {
+        SWITCH_TARGETS[i].value = newPlotNum;
+    }
 };

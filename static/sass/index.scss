@@ -800,6 +800,11 @@ body {
         flex-direction: row;
         align-items: center;
 
+        .switch-plot-num {
+          background-color: #fff;
+          color: #000;
+        }
+
         input {
           text-align: center;
 
