@@ -16,7 +16,8 @@ import {
     PLOT_CO2_CONCENTRATION,
     PLOT_SOIL_PH,
     PLOT_SOIL_MOISTURE,
-    SENSOR_DATA_DISPLAY_STATUS
+    SENSOR_DATA_DISPLAY_STATUS,
+    PLOT_SPRINKLER_STATUS
 } from './data.js';
 
 
@@ -301,4 +302,50 @@ export function updateSwitches(newPlotNum) {
     for (let i=0; i < NUM_OF_TARGETS; i++) {
         SWITCH_TARGETS[i].value = newPlotNum;
     }
+};
+
+export function sendSwitchDataToBackend(data) {
+    const XHR = new XMLHttpRequest();
+    XHR.onreadystatechange = function () {
+        const COMPONENTS_TO_TURN_ON = XHR.responseText;
+        const NUM_OF_COMPONENTS = COMPONENTS_TO_TURN_ON.length;
+
+        if (NUM_OF_COMPONENTS > 0) {
+            for (let i=0; i < NUM_OF_COMPONENTS; i++) {
+                const COMPONENT_INITIAL_LETTER = COMPONENTS_TO_TURN_ON[i];
+
+                switch (COMPONENT_INITIAL_LETTER) {
+                    case 's':
+                        activateSprinkler(data['sprinklerDuration']);
+                        break;
+                }
+            }
+        }
+    }
+    XHR.open('POST', '/api/switchHandler', true);
+    XHR.setRequestHeader("Content-Type", "application/json");
+    XHR.send(JSON.stringify(data));
+};
+
+export function activateSprinkler(duration) {
+    duration = parseInt(duration)
+
+    PLOT_SPRINKLER_STATUS.innerText = 'Sprinkler: ON';
+
+    let soilMoisture = parseFloat(PLOT_SOIL_MOISTURE.innerText.split(': ')[1]);
+
+    for (let i=0; i < duration; i++) {
+        const NEW_MOISTURE = soilMoisture + 12.5;
+
+        if (NEW_MOISTURE < 100.0) {
+            soilMoisture = NEW_MOISTURE
+        }
+        else {
+            duration = i // real duration of sprinkler activation
+        }
+    }
+
+    setTimeout(() => {
+        PLOT_SPRINKLER_STATUS.innerText = 'Sprinkler: OFF';
+    }, duration * 1000);
 };

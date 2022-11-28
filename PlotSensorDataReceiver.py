@@ -71,9 +71,14 @@ class PlotSensorDataReceiver:
             # decreases soil moisture by 0% to 0.05% every 5 seconds
             self.__generateChange(random.uniform, 'soil_moisture', -0.05, 0.0, 0.0, 100.0)
         elif self.sprinklerStatus == 1 and self.sprinklerDuration > 0:
-            # NOTE: receivers collect new data every second (see above to understand why this info is important)
-            self.soil_moisture += 12.5
-            self.sprinklerDuration -= 1
+            newMoisture = self.soil_moisture + 12.5
+
+            if newMoisture < 100.0:
+                # NOTE: receivers collect new data every second (see above to understand why this info is important)
+                self.soil_moisture = newMoisture
+                self.sprinklerDuration -= 1
+            else:
+                self.sprinklerDuration = 0
 
 
 
@@ -92,6 +97,7 @@ class PlotSensorDataReceiver:
         }
 
         return data
+
 
 
     # SETTERS

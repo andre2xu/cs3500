@@ -17,7 +17,8 @@ import {
     deleteGrowthRequirements,
     loadGrowthRequirements,
     loadSensorData,
-    updateSwitches
+    updateSwitches,
+    sendSwitchDataToBackend
 } from './helpers.js';
 
 
@@ -38,11 +39,9 @@ window.addEventListener('load', () => {
     setInterval(() => {
         updateTemporalMetrics(CALENDAR, CLOCK);
         updateHarvestCountdown();
-    }, 1000);
 
-    setInterval(() => {
         loadSensorData(selectedPlot.firstElementChild.innerText.split('#')[1]);
-    }, 3000);
+    }, 1000);
 
 
 
@@ -177,7 +176,11 @@ window.addEventListener('load', () => {
 
             switch (SWITCH.id) {
                 case 'sprinklers':
-                    console.log(INPUT_ELEMENTS);
+                    sendSwitchDataToBackend({
+                        plotNum: INPUT_ELEMENTS[0].value,
+                        sprinklerDuration: INPUT_ELEMENTS[1].value,
+                        pH: INPUT_ELEMENTS[2].value
+                    });
                     break;
             }
         }

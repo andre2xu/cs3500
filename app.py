@@ -131,6 +131,22 @@ def getSensorData(plotNum):
 
     return ''
 
+@app.route("/api/switchHandler", methods=["POST"])
+def handleSwitch():
+    switchData = request.get_json()
+
+    componentsToTurnOn = ''
+
+    if 'sprinklerDuration' in switchData and 'pH' in switchData:
+        receiverInstance = SENSOR_DATA_GENERATORS[switchData['plotNum']]
+        duration = int(switchData['sprinklerDuration'])
+
+        receiverInstance.activateSprinkler(duration)
+
+        componentsToTurnOn += 's'
+
+    return componentsToTurnOn
+
 @app.route("/api/addCrop", methods=["POST"])
 def addCrop():
     response = ''
