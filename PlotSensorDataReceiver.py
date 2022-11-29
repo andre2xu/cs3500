@@ -20,6 +20,8 @@ class PlotSensorDataReceiver:
         self.requiredMoisture = (float(growthRequirements['waterDepth']) / 8.0) * 100
         self.wateringInterval = int(growthRequirements['wateringInterval'] * 3600)
 
+        self.new_pH = 0.0
+
 
 
         # initializing crop variables with average values
@@ -51,7 +53,6 @@ class PlotSensorDataReceiver:
     def __collectNewData(self):
         # generates changes to variables based on constraints
         # self.__generateChange(random.uniform, 'soil_temp', -0.8, 0.8, -30.0, 30.0)
-        # self.__generateChange(random.uniform, 'soil_pH', -0.5, 0.5, 0.0, 14.0)
         # self.__generateChange(random.uniform,'co2_concentration', -100.0, 100.0, 500.0, 2000.0)
         # self.__generateChange(random.randint, 'light_levels', -100, 100, 0.0, 10000)
 
@@ -70,16 +71,37 @@ class PlotSensorDataReceiver:
         if self.sprinklerStatus == 0 and currentElapsedTime % 5 == 0:
             # decreases soil moisture by 0% to 0.05% every 5 seconds
             self.__generateChange(random.uniform, 'soil_moisture', -0.05, 0.0, 0.0, 100.0)
+
+            # changes pH by 0.01 to 0.05 every 5 seconds
+            self.__generateChange(random.uniform, 'soil_pH', 0.01, 0.05, 0.0, 14.0)
+
         elif self.sprinklerStatus == 1 and self.sprinklerDuration > 0:
             newMoisture = self.soil_moisture + 12.5
 
+            # changes moisture
             if newMoisture < 100.0:
-                # NOTE: receivers collect new data every second (see above to understand why this info is important)
                 self.soil_moisture = newMoisture
                 self.sprinklerDuration -= 1
             else:
                 self.sprinklerDuration = 0
 
+            # changes pH
+            pH_difference = abs(self.new_pH - self.soil_pH)
+            pH_min_change = 1.0
+
+            if (pH_difference - 2.0 > 0):
+                pH_min_change = pH_difference - 2.0
+
+            new_pH = random.uniform(pH_min_change, pH_difference)
+
+            if self.new_pH > self.soil_pH and self.soil_pH + new_pH < 14.0:
+                self.soil_pH += new_pH
+            elif self.new_pH < self.soil_pH and self.soil_pH - new_pH > 0.0:
+                self.soil_pH -= new_pH
+
+
+
+        ### SOIL TEMPERATURE ###
 
 
         self.listen() # repeats collection
@@ -112,6 +134,11 @@ class PlotSensorDataReceiver:
             sensorThread = threading.Timer(1.0, self.__collectNewData)
             sensorThread.start()
 
-    def activateSprinkler(self, duration:int):
+    def activateSprinkler(self, duration:int, pH):
         self.sprinklerStatus = 1
         self.sprinklerDuration = duration
+
+        self.new_pH = pH
+
+    def activateTemperatureModifier(self, duration:int, temp):
+        pass

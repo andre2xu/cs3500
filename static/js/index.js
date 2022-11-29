@@ -18,7 +18,8 @@ import {
     loadGrowthRequirements,
     loadSensorData,
     updateSwitches,
-    sendSwitchDataToBackend
+    sendSwitchDataToBackend,
+    activateFertilizer
 } from './helpers.js';
 
 
@@ -177,9 +178,21 @@ window.addEventListener('load', () => {
             switch (SWITCH.id) {
                 case 'sprinklers':
                     sendSwitchDataToBackend({
+                        component: 'sprinkler',
                         plotNum: INPUT_ELEMENTS[0].value,
-                        sprinklerDuration: INPUT_ELEMENTS[1].value,
+                        activationDuration: INPUT_ELEMENTS[1].value,
                         pH: INPUT_ELEMENTS[2].value
+                    });
+                    break;
+                case 'fertilizers':
+                    activateFertilizer(INPUT_ELEMENTS[1].value);
+                    break;
+                case 'temperature':
+                    sendSwitchDataToBackend({
+                        component: 'temperatureModifier',
+                        plotNum: INPUT_ELEMENTS[0].value,
+                        activationDuration: INPUT_ELEMENTS[1].value,
+                        temperature: INPUT_ELEMENTS[2].value
                     });
                     break;
             }

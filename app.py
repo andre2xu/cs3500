@@ -139,13 +139,16 @@ def handleSwitch():
     plotNum = switchData['plotNum']
 
     if plotNum in SENSOR_DATA_GENERATORS:
-        if 'sprinklerDuration' in switchData and 'pH' in switchData:
-            receiverInstance = SENSOR_DATA_GENERATORS[plotNum]
-            duration = int(switchData['sprinklerDuration'])
+        component = switchData['component']
+        receiverInstance = SENSOR_DATA_GENERATORS[plotNum]
+        duration = int(switchData['activationDuration'])
 
-            receiverInstance.activateSprinkler(duration)
-
+        if component == 'sprinkler':
+            receiverInstance.activateSprinkler(duration, float(switchData['pH']))
             componentsToTurnOn += 's'
+        elif component == 'temperatureModifier':
+            componentsToTurnOn += 't'
+
 
     return componentsToTurnOn
 

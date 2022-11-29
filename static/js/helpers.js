@@ -17,7 +17,8 @@ import {
     PLOT_SOIL_PH,
     PLOT_SOIL_MOISTURE,
     SENSOR_DATA_DISPLAY_STATUS,
-    PLOT_SPRINKLER_STATUS
+    PLOT_SPRINKLER_STATUS,
+    PLOT_FERTILIZER_STATUS
 } from './data.js';
 
 
@@ -316,7 +317,7 @@ export function sendSwitchDataToBackend(data) {
 
                 switch (COMPONENT_INITIAL_LETTER) {
                     case 's':
-                        activateSprinkler(data['sprinklerDuration']);
+                        activateSprinkler(data['activationDuration']);
                         break;
                 }
             }
@@ -348,4 +349,12 @@ export function activateSprinkler(duration) {
     setTimeout(() => {
         PLOT_SPRINKLER_STATUS.innerText = 'Sprinkler: OFF';
     }, duration * 1000);
+};
+
+export function activateFertilizer(duration) {
+    PLOT_FERTILIZER_STATUS.innerText = 'Fertilizer: ON';
+
+    setTimeout(() => {
+        PLOT_FERTILIZER_STATUS.innerText = 'Fertilizer: OFF';
+    }, parseInt(duration) * 1000);
 };
