@@ -18,14 +18,24 @@ class PlotSensorDataReceiver:
 
         self.sprinklerStatus = 0 # 0 = OFF / 1 = ON
         self.sprinklerDuration = 0 # seconds
+        self.tempModifierStatus = 0 # 0 = OFF / 1 = ON
+        self.tempModifierDuration = 0 # seconds
 
         self.requiredMoisture = (float(growthRequirements['waterDepth']) / 8.0) * 100
+        required_pH_range = growthRequirements['pH'].split(' - ')
+        required_seedTemp_range = growthRequirements['seedTemperature'].split(' - ')
+        required_cropTemp_range = growthRequirements['cropTemperature'].split(' - ')
+
         self.wateringInterval = int(growthRequirements['wateringInterval'] * 3600)
 
-        required_pH_range = growthRequirements['pH'].split(' - ')
         self.required_min_pH = float(required_pH_range[0])
         self.required_max_pH = float(required_pH_range[1])
         self.new_pH = 0.0
+
+        self.required_seed_minTemp = float(required_seedTemp_range[0])
+        self.required_seed_maxTemp = float(required_seedTemp_range[1])
+        self.required_crop_minTemp = float(required_cropTemp_range[0])
+        self.required_crop_maxTemp = float(required_cropTemp_range[1])
 
 
 
@@ -78,13 +88,11 @@ class PlotSensorDataReceiver:
                 # handles watering interval
                 self.activateSprinkler(int(self.requiredMoisture / 12.5), self.required_min_pH)
 
-
-
         if self.sprinklerStatus == 0 and currentElapsedTime % 5 == 0:
-            # decreases soil moisture by 0% to 0.05% every 5 seconds
+            # makes soil moisture fluctuate by 0% to 0.05% every 5 seconds
             self.__generateChange(random.uniform, 'soil_moisture', -0.05, 0.0, 0.0, 100.0)
 
-            # changes pH by 0.01 to 0.05 every 5 seconds
+            # makes pH fluctuate by 0.01 to 0.05 every 5 seconds
             self.__generateChange(random.uniform, 'soil_pH', 0.01, 0.05, 0.0, 14.0)
 
         elif self.sprinklerStatus == 1 and self.sprinklerDuration > 0:
@@ -153,4 +161,5 @@ class PlotSensorDataReceiver:
         self.new_pH = pH
 
     def activateTemperatureModifier(self, duration:int, temp):
-        pass
+        print(duration)
+        print(temp)

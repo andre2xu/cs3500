@@ -29,8 +29,8 @@ const SOCKET = io();
 SOCKET.connect('http://127.0.0.1:5000/');
 
 SOCKET.on('message', (msg) => {
-    if (msg.constructor === Object) {
-        activateSprinkler(`${msg['sprinkler']}`);
+    if (msg.constructor === Object && PLOT_SPRINKLER_STATUS.innerText.includes('ON') === false) {
+        activateSprinkler(`${msg['sprinkler']}`, true);
     }
 });
 
@@ -330,7 +330,7 @@ export function sendSwitchDataToBackend(data) {
 
                 switch (COMPONENT_INITIAL_LETTER) {
                     case 's':
-                        activateSprinkler(data['sprinklerDuration']);
+                        activateSprinkler(data['activationDuration']);
                         break;
                 }
             }
@@ -341,21 +341,23 @@ export function sendSwitchDataToBackend(data) {
     XHR.send(JSON.stringify(data));
 };
 
-export function activateSprinkler(duration) {
+export function activateSprinkler(duration, for_pH=false) {
     duration = parseInt(duration);
 
     PLOT_SPRINKLER_STATUS.innerText = 'Sprinkler: ON';
 
-    let soilMoisture = parseFloat(PLOT_SOIL_MOISTURE.innerText.split(': ')[1]);
+    if (for_pH === false) {
+        let soilMoisture = parseFloat(PLOT_SOIL_MOISTURE.innerText.split(': ')[1]);
 
-    for (let i=0; i < duration; i++) {
-        const NEW_MOISTURE = soilMoisture + 12.5;
+        for (let i=0; i < duration; i++) {
+            const NEW_MOISTURE = soilMoisture + 12.5;
 
-        if (NEW_MOISTURE < 100.0) {
-            soilMoisture = NEW_MOISTURE;
-        }
-        else {
-            duration = i; // real duration of sprinkler activation
+            if (NEW_MOISTURE < 100.0) {
+                soilMoisture = NEW_MOISTURE;
+            }
+            else {
+                duration = i; // real duration of sprinkler activation
+            }
         }
     }
 

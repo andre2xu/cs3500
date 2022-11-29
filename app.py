@@ -151,6 +151,7 @@ def handleSwitch():
             receiverInstance.activateSprinkler(duration, float(switchData['pH']))
             componentsToTurnOn += 's'
         elif component == 'temperatureModifier':
+            receiverInstance.activateTemperatureModifier(duration, float(switchData['temperature']))
             componentsToTurnOn += 't'
 
 
