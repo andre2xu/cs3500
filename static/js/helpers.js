@@ -1,3 +1,5 @@
+import "https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js";
+
 import {
     HARVEST_COUNTDOWN,
     SERVER_METRICS,
@@ -20,6 +22,17 @@ import {
     PLOT_SPRINKLER_STATUS,
     PLOT_FERTILIZER_STATUS
 } from './data.js';
+
+
+
+const SOCKET = io();
+SOCKET.connect('http://127.0.0.1:5000/');
+
+SOCKET.on('message', (msg) => {
+    if (msg.constructor === Object) {
+        activateSprinkler(`${msg['sprinkler']}`);
+    }
+});
 
 
 
@@ -317,7 +330,7 @@ export function sendSwitchDataToBackend(data) {
 
                 switch (COMPONENT_INITIAL_LETTER) {
                     case 's':
-                        activateSprinkler(data['activationDuration']);
+                        activateSprinkler(data['sprinklerDuration']);
                         break;
                 }
             }
@@ -329,7 +342,7 @@ export function sendSwitchDataToBackend(data) {
 };
 
 export function activateSprinkler(duration) {
-    duration = parseInt(duration)
+    duration = parseInt(duration);
 
     PLOT_SPRINKLER_STATUS.innerText = 'Sprinkler: ON';
 
@@ -339,10 +352,10 @@ export function activateSprinkler(duration) {
         const NEW_MOISTURE = soilMoisture + 12.5;
 
         if (NEW_MOISTURE < 100.0) {
-            soilMoisture = NEW_MOISTURE
+            soilMoisture = NEW_MOISTURE;
         }
         else {
-            duration = i // real duration of sprinkler activation
+            duration = i; // real duration of sprinkler activation
         }
     }
 

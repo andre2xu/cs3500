@@ -3,6 +3,7 @@ from flask import Flask, request, render_template
 from Models import db, CropGrowthRequirements
 from sqlalchemy import select, update
 from PlotSensorDataReceiver import PlotSensorDataReceiver
+from flask_socketio import SocketIO
 
 
 mimetypes.add_type('application/javascript', '.js')
@@ -16,8 +17,11 @@ app = Flask(
     template_folder=STATIC_FOLDER + 'html',
     static_folder=STATIC_FOLDER
 )
+app.config['SECRET_KEY'] = 'secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+socket = SocketIO(app)
 
 
 
@@ -79,7 +83,7 @@ def index():
         for i in range(num_of_plots):
             plotNum = activePlots[i]
 
-            sensorDataGenerator = PlotSensorDataReceiver(plotNum, getGrowthRequirements(plotNum))
+            sensorDataGenerator = PlotSensorDataReceiver(plotNum, getGrowthRequirements(plotNum), socket)
             sensorDataGenerator.startListening()
             sensorDataGenerator.listen()
 
@@ -185,7 +189,7 @@ def addCrop():
             response = plotNum
 
             # activates sensors for plot
-            sensorDataGenerator = PlotSensorDataReceiver(plotNum)
+            sensorDataGenerator = PlotSensorDataReceiver(plotNum, newGrowthRequirements, socket)
             sensorDataGenerator.startListening()
             sensorDataGenerator.listen()
             SENSOR_DATA_GENERATORS[plotNum] = sensorDataGenerator
@@ -237,4 +241,4 @@ def deleteCrop(plotNum):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socket.run(app, debug=True)

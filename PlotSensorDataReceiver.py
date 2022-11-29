@@ -9,7 +9,9 @@ class PlotSensorDataReceiver:
     """
 
 
-    def __init__(self, plotNum, growthRequirements:dict):
+    def __init__(self, plotNum, growthRequirements:dict, socket):
+        self.socket = socket
+
         self.plot_num = int(plotNum)
         self.threadingIsActive = False
         self.timeReceiverStartedCollecting = time.time()
@@ -20,6 +22,9 @@ class PlotSensorDataReceiver:
         self.requiredMoisture = (float(growthRequirements['waterDepth']) / 8.0) * 100
         self.wateringInterval = int(growthRequirements['wateringInterval'] * 3600)
 
+        required_pH_range = growthRequirements['pH'].split(' - ')
+        self.required_min_pH = float(required_pH_range[0])
+        self.required_max_pH = float(required_pH_range[1])
         self.new_pH = 0.0
 
 
@@ -64,9 +69,16 @@ class PlotSensorDataReceiver:
 
         currentElapsedTime = int(time.time() - self.timeReceiverStartedCollecting)
 
-        # handles watering interval
-        if self.sprinklerStatus == 0 and currentElapsedTime % self.wateringInterval == 0 and self.soil_moisture < 1.0:
-            self.activateSprinkler(int(self.requiredMoisture / 12.5))
+        if self.sprinklerStatus == 0:
+            if self.soil_pH < self.required_min_pH or self.soil_pH > self.required_max_pH:
+                # handles pH regulation (**is prioritized over moisture requirement; sprinkler is turned on for a long duration to ensure the minimum pH requirement is reached)
+                self.activateSprinkler(10, self.required_min_pH)
+                self.socket.send({'sprinkler':10})
+            elif currentElapsedTime % self.wateringInterval == 0 and self.soil_moisture < 1.0:
+                # handles watering interval
+                self.activateSprinkler(int(self.requiredMoisture / 12.5), self.required_min_pH)
+
+
 
         if self.sprinklerStatus == 0 and currentElapsedTime % 5 == 0:
             # decreases soil moisture by 0% to 0.05% every 5 seconds
