@@ -20,7 +20,8 @@ import {
     PLOT_SOIL_MOISTURE,
     SENSOR_DATA_DISPLAY_STATUS,
     PLOT_SPRINKLER_STATUS,
-    PLOT_FERTILIZER_STATUS
+    PLOT_FERTILIZER_STATUS,
+    PLOT_TEMPERATURE_MODIFIER_STATUS
 } from './data.js';
 
 
@@ -29,8 +30,13 @@ const SOCKET = io();
 SOCKET.connect('http://127.0.0.1:5000/');
 
 SOCKET.on('message', (msg) => {
-    if (msg.constructor === Object && PLOT_SPRINKLER_STATUS.innerText.includes('ON') === false) {
-        activateSprinkler(`${msg['sprinkler']}`, true);
+    if (msg.constructor === Object) {
+        if (msg['sprinkler'] !== undefined && PLOT_SPRINKLER_STATUS.innerText.includes('OFF')) {
+            activateSprinkler(`${msg['sprinkler']}`, true);
+        }
+        else if (msg['tempModifier'] !== undefined && PLOT_TEMPERATURE_MODIFIER_STATUS.innerText.includes('OFF')) {
+            activateTempModifier(`${msg['tempModifier']}`);
+        }
     }
 });
 
@@ -372,4 +378,14 @@ export function activateFertilizer(duration) {
     setTimeout(() => {
         PLOT_FERTILIZER_STATUS.innerText = 'Fertilizer: OFF';
     }, parseInt(duration) * 1000);
+};
+
+export function activateTempModifier(duration) {
+    duration = parseInt(duration);
+
+    PLOT_TEMPERATURE_MODIFIER_STATUS.innerText = 'Temperature Modifier: ON';
+
+    setTimeout(() => {
+        PLOT_TEMPERATURE_MODIFIER_STATUS.innerText = 'Temperature Modifier: OFF';
+    }, duration * 1000);
 };

@@ -1,4 +1,4 @@
-import random, threading, time
+import random, threading, time, datetime
 
 class PlotSensorDataReceiver:
     """
@@ -36,11 +36,12 @@ class PlotSensorDataReceiver:
         self.required_seed_maxTemp = float(required_seedTemp_range[1])
         self.required_crop_minTemp = float(required_cropTemp_range[0])
         self.required_crop_maxTemp = float(required_cropTemp_range[1])
+        self.newTemp = 0.0
 
 
 
         # initializing crop variables with average values
-        self.soil_temp = round(random.uniform(6.0, 8.0), 2) # celsius
+        self.soil_temp = round(random.uniform(25.0, 27.0), 2) # celsius
         self.soil_pH = round(random.uniform(6.0, 7.0), 2) # pH scale
         self.co2_concentration = round(random.uniform(400.0, 500.0), 2) # ppm
         self.soil_moisture = round(random.uniform(8.0, 10.0), 2) # %
@@ -66,46 +67,45 @@ class PlotSensorDataReceiver:
         setattr(self, metric, newValue)
 
     def __collectNewData(self):
-        # generates changes to variables based on constraints
-        # self.__generateChange(random.uniform, 'soil_temp', -0.8, 0.8, -30.0, 30.0)
         # self.__generateChange(random.uniform,'co2_concentration', -100.0, 100.0, 500.0, 2000.0)
         # self.__generateChange(random.randint, 'light_levels', -100, 100, 0.0, 10000)
 
 
 
-        ### SOIL MOISTURE & SOIL PH ###
-        if self.sprinklerDuration == 0:
-            self.sprinklerStatus = 0 # turns off sprinkler
-
         currentElapsedTime = int(time.time() - self.timeReceiverStartedCollecting)
 
+        ### SOIL MOISTURE & SOIL PH ###
+        if self.sprinklerDuration == 0:
+            self.sprinklerStatus = 0
+
         if self.sprinklerStatus == 0:
+            # AUTOMATED GROWTH VARIABLE CONTROL
             if self.soil_pH < self.required_min_pH or self.soil_pH > self.required_max_pH:
-                # handles pH regulation (**is prioritized over moisture requirement; sprinkler is turned on for a long duration to ensure the minimum pH requirement is reached)
+                # pH regulation
                 self.activateSprinkler(10, self.required_min_pH)
+
                 self.socket.send({'sprinkler':10})
             elif currentElapsedTime % self.wateringInterval == 0 and self.soil_moisture < 1.0:
-                # handles watering interval
+                # watering interval
                 self.activateSprinkler(int(self.requiredMoisture / 12.5), self.required_min_pH)
 
-        if self.sprinklerStatus == 0 and currentElapsedTime % 5 == 0:
-            # makes soil moisture fluctuate by 0% to 0.05% every 5 seconds
-            self.__generateChange(random.uniform, 'soil_moisture', -0.05, 0.0, 0.0, 100.0)
-
-            # makes pH fluctuate by 0.01 to 0.05 every 5 seconds
-            self.__generateChange(random.uniform, 'soil_pH', 0.01, 0.05, 0.0, 14.0)
+            # NATURAL FLUCTUATIONS
+            if currentElapsedTime % 5 == 0:
+                self.__generateChange(random.uniform, 'soil_moisture', -0.05, 0.0, 0.0, 100.0)
+                self.__generateChange(random.uniform, 'soil_pH', 0.01, 0.05, 0.0, 14.0)
 
         elif self.sprinklerStatus == 1 and self.sprinklerDuration > 0:
+            # MANUAL GROWTH VARIABLE CONTROL
             newMoisture = self.soil_moisture + 12.5
 
-            # changes moisture
+            # moisture
             if newMoisture < 100.0:
                 self.soil_moisture = newMoisture
                 self.sprinklerDuration -= 1
             else:
                 self.sprinklerDuration = 0
 
-            # changes pH
+            # pH
             pH_difference = abs(self.new_pH - self.soil_pH)
             pH_min_change = 1.0
 
@@ -122,6 +122,47 @@ class PlotSensorDataReceiver:
 
 
         ### SOIL TEMPERATURE ###
+        if self.tempModifierDuration == 0:
+            self.tempModifierStatus = 0
+
+        if self.tempModifierStatus == 0:
+            # AUTOMATED GROWTH VARIABLE CONTROL
+            if self.soil_temp < self.required_crop_minTemp or self.soil_temp > self.required_crop_maxTemp:
+                self.activateTemperatureModifier(30, self.required_crop_minTemp)
+
+            # NATURAL FLUCTUATIONS
+            if currentElapsedTime % 3 == 0:
+                self.__generateChange(random.uniform, 'soil_temp', -0.8, 0.8, -100.0, 100.0)
+        elif self.tempModifierStatus == 1 and self.tempModifierDuration > 0:
+            # MANUAL GROWTH VARIABLE CONTROL
+            tempDifference = abs(self.newTemp - self.soil_temp)
+            temp_min_change = 1.0
+            temp_max_change = tempDifference
+
+            if tempDifference > 50:
+                temp_max_change = tempDifference - 25.0
+            elif tempDifference > 40:
+                temp_max_change = tempDifference - 20.0
+            elif tempDifference > 30:
+                temp_max_change = tempDifference - 15.0
+            elif tempDifference > 20:
+                temp_max_change = tempDifference - 10.0
+            elif tempDifference > 10:
+                temp_max_change = tempDifference - 5.0
+
+            if (tempDifference - 2.0 > 0):
+                temp_min_change = tempDifference - 2.0
+
+            newTemp = random.uniform(temp_min_change, temp_max_change)
+
+            if self.newTemp > self.soil_temp and self.soil_temp + newTemp < 100.0:
+                self.soil_temp += newTemp
+                self.tempModifierDuration -= 1
+            elif self.newTemp < self.soil_temp and self.soil_temp - newTemp > -100.0:
+                self.soil_temp -= newTemp
+                self.tempModifierDuration -= 1
+            else:
+                self.tempModifierDuration = 0
 
 
         self.listen() # repeats collection
@@ -161,5 +202,9 @@ class PlotSensorDataReceiver:
         self.new_pH = pH
 
     def activateTemperatureModifier(self, duration:int, temp):
-        print(duration)
-        print(temp)
+        self.tempModifierStatus = 1
+        self.tempModifierDuration = duration
+
+        self.newTemp = temp
+
+        self.socket.send({'tempModifier':duration})
