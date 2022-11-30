@@ -1,6 +1,7 @@
 import "https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js";
 
 import {
+    FARM_MAP,
     HARVEST_COUNTDOWN,
     SERVER_METRICS,
     SERVER_METRICS_LIST,
@@ -193,6 +194,8 @@ export function submitForm(form, url, getResponse) {
 
             if (RESPONSE.length === 1) {
                 document.querySelector(`[data-plot-num="${RESPONSE}"]`).lastElementChild.classList.replace('red', 'green');
+
+                activateMapPlot(RESPONSE);
             }
         };
     }
@@ -210,7 +213,11 @@ export function loadActivePlots() {
 
         if (NUMBER_OF_PLOTS > 0) {
             for (let i=0; i < NUMBER_OF_PLOTS; i++) {
-                document.querySelector(`[data-plot-num="${RESPONSE[i]}"]`).lastElementChild.classList.replace('red', 'green');
+                const PLOT_NUM = RESPONSE[i];
+
+                document.querySelector(`[data-plot-num="${PLOT_NUM}"]`).lastElementChild.classList.replace('red', 'green');
+
+                activateMapPlot(PLOT_NUM);
             }
         }
     }
@@ -424,4 +431,16 @@ export function activateCO2Modifier(duration) {
     setTimeout(() => {
         PLOT_CO2_MODIFIER_STATUS.innerHTML = 'CO<sub>2</sub> Modifier: OFF';
     }, duration * 1000);
+};
+
+
+
+
+// MAP
+export function activateMapPlot(plotNum) {
+    FARM_MAP.querySelector(`[data-map-plot="${plotNum}"]`).classList.add('active');
+};
+
+export function deactivateMapPlot(plotNum) {
+    FARM_MAP.querySelector(`[data-map-plot="${plotNum}"]`).classList.remove('active');
 };

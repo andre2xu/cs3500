@@ -19,7 +19,8 @@ import {
     loadSensorData,
     updateSwitches,
     sendSwitchDataToBackend,
-    activateFertilizer
+    activateFertilizer,
+    deactivateMapPlot
 } from './helpers.js';
 
 
@@ -131,6 +132,7 @@ window.addEventListener('load', () => {
                 if (selectedPlot.lastElementChild.classList.contains('green')) {
                     deleteGrowthRequirements(SELECTED_PLOT_NUM);
                     loadSensorData(SELECTED_PLOT_NUM);
+                    deactivateMapPlot(SELECTED_PLOT_NUM);
 
                     window.harvestDate = null;
                     updateHarvestCountdown();

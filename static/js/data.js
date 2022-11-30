@@ -2,6 +2,7 @@ window.harvestDate = null;
 
 
 
+export const FARM_MAP = document.getElementById('farmMap');
 export const CALENDAR = document.getElementById('dynamicCalendar');
 export const CLOCK = document.getElementById('dynamicClock');
 export const HARVEST_COUNTDOWN = document.getElementById('harvestDate');
