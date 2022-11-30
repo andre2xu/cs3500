@@ -195,7 +195,7 @@ def addCrop():
             response = plotNum
 
             # activates sensors for plot
-            sensorDataGenerator = PlotSensorDataReceiver(plotNum, newGrowthRequirements, socket)
+            sensorDataGenerator = PlotSensorDataReceiver(plotNum, getGrowthRequirements(plotNum), socket)
             sensorDataGenerator.startListening()
             sensorDataGenerator.listen()
             SENSOR_DATA_GENERATORS[plotNum] = sensorDataGenerator
@@ -229,6 +229,8 @@ def editCrop():
 
             db.session.execute(updateQuery)
             db.session.commit()
+
+            SENSOR_DATA_GENERATORS[plotNum].updateGrowthRequirements(getGrowthRequirements(plotNum))
 
     return ''
 

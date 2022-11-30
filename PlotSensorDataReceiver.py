@@ -296,6 +296,28 @@ class PlotSensorDataReceiver:
             sensorThread = threading.Timer(1.0, self.__collectNewData)
             sensorThread.start()
 
+    def updateGrowthRequirements(self, newGrowthRequirements:dict):
+        self.requiredMoisture = (float(newGrowthRequirements['waterDepth']) / 8.0) * 100
+        self.wateringInterval = int(newGrowthRequirements['wateringInterval'] * 3600)
+
+        self.requiredLightExposure = newGrowthRequirements['lightExposureDuration'] * 3600
+
+        required_pH_range = newGrowthRequirements['pH'].split(' - ')
+        self.required_min_pH = float(required_pH_range[0])
+        self.required_max_pH = float(required_pH_range[1])
+        self.new_pH = 0.0
+
+        required_seedTemp_range = newGrowthRequirements['seedTemperature'].split(' - ')
+        required_cropTemp_range = newGrowthRequirements['cropTemperature'].split(' - ')
+        self.required_seed_minTemp = float(required_seedTemp_range[0])
+        self.required_seed_maxTemp = float(required_seedTemp_range[1])
+        self.required_crop_minTemp = float(required_cropTemp_range[0])
+        self.required_crop_maxTemp = float(required_cropTemp_range[1])
+
+        required_co2_range = newGrowthRequirements['co2Concentration'].split(' - ')
+        self.required_min_co2 = int(required_co2_range[0])
+        self.required_max_co2 = int(required_co2_range[1])
+
     def activateSprinkler(self, duration:int, pH):
         self.sprinklerStatus = 1
         self.sprinklerDuration = duration
