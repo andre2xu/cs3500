@@ -84,7 +84,7 @@ class PlotSensorDataReceiver:
 
         if self.sprinklerStatus == 0:
             # AUTOMATED GROWTH VARIABLE CONTROL
-            if self.soil_pH < self.required_min_pH or self.soil_pH > self.required_max_pH:
+            if self.soil_moisture < 100.0 - 12.5 and (self.soil_pH < self.required_min_pH or self.soil_pH > self.required_max_pH):
                 # pH regulation
                 self.activateSprinkler(10, self.required_min_pH)
 
