@@ -202,6 +202,14 @@ window.addEventListener('load', () => {
                         activationDuration: INPUT_ELEMENTS[1].value
                     });
                     break;
+                case 'co2':
+                    sendSwitchDataToBackend({
+                        component: 'co2Modifier',
+                        plotNum: INPUT_ELEMENTS[0].value,
+                        activationDuration: INPUT_ELEMENTS[1].value,
+                        ppm: INPUT_ELEMENTS[2].value
+                    });
+                    break;
             }
         }
     });

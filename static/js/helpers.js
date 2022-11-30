@@ -22,7 +22,8 @@ import {
     PLOT_SPRINKLER_STATUS,
     PLOT_FERTILIZER_STATUS,
     PLOT_TEMPERATURE_MODIFIER_STATUS,
-    PLOT_LIGHTING_MODIFIER_STATUS
+    PLOT_LIGHTING_MODIFIER_STATUS,
+    PLOT_CO2_MODIFIER_STATUS
 } from './data.js';
 
 
@@ -40,6 +41,9 @@ SOCKET.on('message', (msg) => {
         }
         else if (msg['lightModifier'] !== undefined && PLOT_LIGHTING_MODIFIER_STATUS.innerText.includes('OFF')) {
             activateLightModifier(`${msg['lightModifier']}`);
+        }
+        else if (msg['co2Modifier'] !== undefined && PLOT_CO2_MODIFIER_STATUS.innerText.includes('OFF')) {
+            activateCO2Modifier(`${msg['co2Modifier']}`);
         }
     }
 });
@@ -348,6 +352,8 @@ export function sendSwitchDataToBackend(data) {
                         activateTempModifier(ACTIVATION_DURATION);
                     case 'l':
                         activateLightModifier(ACTIVATION_DURATION);
+                    case 'c':
+                        activateCO2Modifier(ACTIVATION_DURATION);
                 }
             }
         }
@@ -407,5 +413,15 @@ export function activateLightModifier(duration) {
 
     setTimeout(() => {
         PLOT_LIGHTING_MODIFIER_STATUS.innerText = 'Lighting Modifier: OFF';
+    }, duration * 1000);
+};
+
+export function activateCO2Modifier(duration) {
+    duration = parseInt(duration);
+
+    PLOT_CO2_MODIFIER_STATUS.innerHTML = 'CO<sub>2</sub> Modifier: ON';
+
+    setTimeout(() => {
+        PLOT_CO2_MODIFIER_STATUS.innerHTML = 'CO<sub>2</sub> Modifier: OFF';
     }, duration * 1000);
 };

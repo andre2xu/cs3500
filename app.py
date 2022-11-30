@@ -156,6 +156,9 @@ def handleSwitch():
         elif component == 'lightingModifier':
             receiverInstance.activateLightModifier(duration)
             componentsToTurnOn += 'l'
+        elif component == 'co2Modifier':
+            receiverInstance.activateCO2Modifier(duration, int(switchData['ppm']))
+            componentsToTurnOn += 'c'
 
     return componentsToTurnOn
 

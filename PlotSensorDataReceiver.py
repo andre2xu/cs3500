@@ -24,6 +24,8 @@ class PlotSensorDataReceiver:
         self.tempModifierDuration = 0
         self.lightModifierStatus = 1
         self.lightModifierDuration = int(growthRequirements['lightExposureDuration'] * 3600)
+        self.co2ModifierStatus = 0
+        self.co2ModifierDuration = 0
 
         self.requiredMoisture = (float(growthRequirements['waterDepth']) / 8.0) * 100
         self.wateringInterval = int(growthRequirements['wateringInterval'] * 3600)
@@ -43,12 +45,17 @@ class PlotSensorDataReceiver:
         self.required_crop_maxTemp = float(required_cropTemp_range[1])
         self.newTemp = 0.0
 
+        required_co2_range = growthRequirements['co2Concentration'].split(' - ')
+        self.required_min_co2 = int(required_co2_range[0])
+        self.required_max_co2 = int(required_co2_range[1])
+        self.newCO2Concentration = 0
+
 
 
         # initializing crop variables with average values
         self.soil_temp = round(random.uniform(25.0, 27.0), 2) # celsius
         self.soil_pH = round(random.uniform(6.0, 7.0), 2) # pH scale
-        self.co2_concentration = round(random.uniform(400.0, 500.0), 2) # ppm
+        self.co2_concentration = random.randint(1000, 1600) # ppm
         self.soil_moisture = round(random.uniform(8.0, 10.0), 2) # %
         self.light_levels = random.randint(9000, 10000) # lux
 
@@ -72,10 +79,6 @@ class PlotSensorDataReceiver:
         setattr(self, metric, newValue)
 
     def __collectNewData(self):
-        # self.__generateChange(random.uniform,'co2_concentration', -100.0, 100.0, 500.0, 2000.0)
-
-
-
         currentElapsedTime = int(time.time() - self.timeReceiverStartedCollecting)
 
         ### SOIL MOISTURE & SOIL PH ###
@@ -141,22 +144,11 @@ class PlotSensorDataReceiver:
         elif self.tempModifierStatus == 1 and self.tempModifierDuration > 0:
             # MANUAL GROWTH VARIABLE CONTROL
             tempDifference = abs(self.newTemp - self.soil_temp)
-            temp_min_change = 1.0
-            temp_max_change = tempDifference
+            temp_min_change = -100.0
+            temp_max_change = 100.0
 
             if tempDifference > 50:
                 temp_max_change = tempDifference - 25.0
-            elif tempDifference > 40:
-                temp_max_change = tempDifference - 20.0
-            elif tempDifference > 30:
-                temp_max_change = tempDifference - 15.0
-            elif tempDifference > 20:
-                temp_max_change = tempDifference - 10.0
-            elif tempDifference > 10:
-                temp_max_change = tempDifference - 5.0
-
-            if (tempDifference - 2.0 > 0):
-                temp_min_change = tempDifference - 2.0
 
             newTemp = random.uniform(temp_min_change, temp_max_change)
 
@@ -201,6 +193,65 @@ class PlotSensorDataReceiver:
                 self.light_levels = random.randint(9000, 10000)
 
 
+
+        ### CO2 CONCENTRATION ###
+        if self.co2ModifierDuration == 0:
+            self.co2ModifierStatus = 0
+
+        if self.co2ModifierStatus == 0:
+            # AUTOMATED GROWTH VARIABLE CONTROL
+            if self.co2_concentration < self.required_min_co2 or self.co2_concentration > self.required_max_co2:
+                self.activateCO2Modifier(10, self.required_max_co2)
+
+                self.socket.send({'co2Modifier':10})
+
+            # NATURAL FLUCTUATIONS
+            if currentElapsedTime % 3 == 0:
+                self.__generateChange(random.randint,'co2_concentration', -50, 50, 800, 2000)
+        elif self.co2ModifierStatus == 1 and self.co2ModifierDuration > 0:
+            # MANUAL GROWTH VARIABLE CONTROL
+            co2Difference = abs(self.newCO2Concentration - self.co2_concentration)
+            co2_min_change = 1
+            co2_max_change = 2000
+
+            if co2Difference > 1000:
+                co2_min_change = 800
+                co2_max_change = 900
+            elif co2Difference > 800:
+                co2_min_change = 600
+                co2_max_change = 700
+            elif co2Difference > 600:
+                co2_min_change = 400
+                co2_max_change = 500
+            elif co2Difference > 400:
+                co2_min_change = 200
+                co2_max_change = 300
+            elif co2Difference > 200:
+                co2_min_change = 80
+                co2_max_change = 100
+            elif co2Difference > 50:
+                co2_min_change = 30
+                co2_max_change = 40
+            elif co2Difference > 25:
+                co2_min_change = 10
+                co2_max_change = 20
+            else:
+                co2_min_change = 1
+                co2_max_change = 10
+
+            newCO2 = random.randint(co2_min_change, co2_max_change)
+
+            if self.newCO2Concentration > self.co2_concentration and self.co2_concentration + newCO2 < 2000:
+                self.co2_concentration += newCO2
+                self.co2ModifierDuration -= 1
+            elif self.newCO2Concentration < self.co2_concentration and self.co2_concentration - newCO2 > 0:
+                self.co2_concentration -= newCO2
+                self.co2ModifierDuration -= 1
+            else:
+                self.co2ModifierDuration = 0
+
+
+
         self.listen() # repeats collection
 
 
@@ -210,7 +261,7 @@ class PlotSensorDataReceiver:
             "plotNum" : self.plot_num,
             "soilTemp" : round(self.soil_temp, 2),
             "pH" : round(self.soil_pH, 2),
-            "co2" : round(self.co2_concentration, 2),
+            "co2" : self.co2_concentration,
             "moisture" : round(self.soil_moisture, 2),
             "lighting" : self.light_levels
         }
@@ -246,3 +297,9 @@ class PlotSensorDataReceiver:
     def activateLightModifier(self, duration:int):
         self.lightModifierStatus = 1
         self.lightModifierDuration = duration
+
+    def activateCO2Modifier(self, duration:int, ppm):
+        self.co2ModifierStatus = 1
+        self.co2ModifierDuration = duration
+
+        self.newCO2Concentration = ppm
