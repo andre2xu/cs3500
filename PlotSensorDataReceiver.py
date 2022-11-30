@@ -80,6 +80,7 @@ class PlotSensorDataReceiver:
 
     def __collectNewData(self):
         currentElapsedTime = int(time.time() - self.timeReceiverStartedCollecting)
+        systemIsDoingComparison = currentElapsedTime % 30 == 0
 
         ### SOIL MOISTURE & SOIL PH ###
         if self.sprinklerDuration == 0:
@@ -87,7 +88,7 @@ class PlotSensorDataReceiver:
 
         if self.sprinklerStatus == 0:
             # AUTOMATED GROWTH VARIABLE CONTROL
-            if self.soil_moisture < 100.0 - 12.5 and (self.soil_pH < self.required_min_pH or self.soil_pH > self.required_max_pH):
+            if systemIsDoingComparison and self.soil_moisture < 87.5 and (self.soil_pH < self.required_min_pH or self.soil_pH > self.required_max_pH):
                 # pH regulation
                 self.activateSprinkler(10, self.required_min_pH)
 
@@ -133,22 +134,35 @@ class PlotSensorDataReceiver:
 
         if self.tempModifierStatus == 0:
             # AUTOMATED GROWTH VARIABLE CONTROL
-            if self.soil_temp < self.required_crop_minTemp or self.soil_temp > self.required_crop_maxTemp:
+            if systemIsDoingComparison and self.soil_temp < self.required_crop_minTemp or self.soil_temp > self.required_crop_maxTemp:
                 self.activateTemperatureModifier(30, self.required_crop_minTemp + 1.0)
 
                 self.socket.send({'tempModifier':30})
 
             # NATURAL FLUCTUATIONS
-            if currentElapsedTime % 3 == 0:
+            if currentElapsedTime % 10 == 0:
                 self.__generateChange(random.uniform, 'soil_temp', -0.8, 0.8, -100.0, 100.0)
         elif self.tempModifierStatus == 1 and self.tempModifierDuration > 0:
             # MANUAL GROWTH VARIABLE CONTROL
             tempDifference = abs(self.newTemp - self.soil_temp)
-            temp_min_change = -100.0
-            temp_max_change = 100.0
+            temp_min_change = 0.0
+            temp_max_change = 0.0
 
-            if tempDifference > 50:
-                temp_max_change = tempDifference - 25.0
+            if tempDifference > 80.0:
+                temp_max_change = 70.0
+                temp_min_change = 60.0
+            elif tempDifference > 60.0:
+                temp_max_change = 50.0
+                temp_min_change = 40.0
+            elif tempDifference > 40.0:
+                temp_max_change = 30.0
+                temp_min_change = 20.0
+            elif tempDifference > 20.0:
+                temp_max_change = 10.0
+                temp_min_change = 5.0
+            else:
+                temp_max_change = 5.0
+                temp_min_change = 1.0
 
             newTemp = random.uniform(temp_min_change, temp_max_change)
 
@@ -159,7 +173,7 @@ class PlotSensorDataReceiver:
                 self.soil_temp -= newTemp
                 self.tempModifierDuration -= 1
             else:
-                self.tempModifierDuration = 0
+                self.tempModifierDuration -= 1
 
 
 
@@ -200,13 +214,13 @@ class PlotSensorDataReceiver:
 
         if self.co2ModifierStatus == 0:
             # AUTOMATED GROWTH VARIABLE CONTROL
-            if self.co2_concentration < self.required_min_co2 or self.co2_concentration > self.required_max_co2:
+            if systemIsDoingComparison and self.co2_concentration < self.required_min_co2 or self.co2_concentration > self.required_max_co2:
                 self.activateCO2Modifier(10, self.required_max_co2)
 
                 self.socket.send({'co2Modifier':10})
 
             # NATURAL FLUCTUATIONS
-            if currentElapsedTime % 3 == 0:
+            if currentElapsedTime % 10 == 0:
                 self.__generateChange(random.randint,'co2_concentration', -50, 50, 800, 2000)
         elif self.co2ModifierStatus == 1 and self.co2ModifierDuration > 0:
             # MANUAL GROWTH VARIABLE CONTROL
@@ -215,29 +229,29 @@ class PlotSensorDataReceiver:
             co2_max_change = 2000
 
             if co2Difference > 1000:
-                co2_min_change = 800
                 co2_max_change = 900
+                co2_min_change = 800
             elif co2Difference > 800:
-                co2_min_change = 600
                 co2_max_change = 700
+                co2_min_change = 600
             elif co2Difference > 600:
-                co2_min_change = 400
                 co2_max_change = 500
+                co2_min_change = 400
             elif co2Difference > 400:
-                co2_min_change = 200
                 co2_max_change = 300
+                co2_min_change = 200
             elif co2Difference > 200:
-                co2_min_change = 80
                 co2_max_change = 100
+                co2_min_change = 80
             elif co2Difference > 50:
-                co2_min_change = 30
                 co2_max_change = 40
+                co2_min_change = 30
             elif co2Difference > 25:
-                co2_min_change = 10
                 co2_max_change = 20
+                co2_min_change = 10
             else:
-                co2_min_change = 1
                 co2_max_change = 10
+                co2_min_change = 1
 
             newCO2 = random.randint(co2_min_change, co2_max_change)
 
