@@ -279,6 +279,10 @@ body {
         font-weight: bold;
         background-color: red;
 
+        &:hover {
+          cursor: pointer;
+        }
+
         &.active {
           background-color: green;
         }

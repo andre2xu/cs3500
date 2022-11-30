@@ -2,7 +2,8 @@ import {
     CALENDAR,
     CLOCK,
     ADD_FORM,
-    EDIT_FORM
+    EDIT_FORM,
+    FARM_MAP
 } from './data.js';
 
 import {
@@ -212,6 +213,34 @@ window.addEventListener('load', () => {
                         ppm: INPUT_ELEMENTS[2].value
                     });
                     break;
+            }
+        }
+    });
+
+
+
+    // MAP
+    FARM_MAP.addEventListener('click', (e) => {
+        const ELEMENT_CLICKED = e.target;
+
+        if (ELEMENT_CLICKED.hasAttribute('data-map-plot')) {
+            const PLOT_NUM = ELEMENT_CLICKED.getAttribute('data-map-plot');
+
+            if (PLOT_NUM !== selectedPlot.getAttribute('data-plot-num')) {
+                const PLOT_LISTING_TO_SELECT = document.querySelector(`[data-plot-num="${PLOT_NUM}"]`);
+
+                PLOT_LISTING_TO_SELECT.classList.add('selected');
+                selectedPlot.classList.remove('selected');
+
+                selectedPlot = PLOT_LISTING_TO_SELECT;
+
+                document.getElementById('addPlotNum').value = PLOT_NUM;
+                document.getElementById('editPlotNum').value = PLOT_NUM;
+
+                loadGrowthRequirements(PLOT_NUM);
+                updateHarvestCountdown();
+                loadSensorData(PLOT_NUM);
+                updateSwitches(PLOT_NUM);
             }
         }
     });
