@@ -16,22 +16,27 @@ class PlotSensorDataReceiver:
         self.threadingIsActive = False
         self.timeReceiverStartedCollecting = time.time()
 
-        self.sprinklerStatus = 0 # 0 = OFF / 1 = ON
-        self.sprinklerDuration = 0 # seconds
-        self.tempModifierStatus = 0 # 0 = OFF / 1 = ON
-        self.tempModifierDuration = 0 # seconds
+        # STATUS: 0 = OFF / 1 = ON
+        # DURATION UNIT: seconds
+        self.sprinklerStatus = 0
+        self.sprinklerDuration = 0
+        self.tempModifierStatus = 0
+        self.tempModifierDuration = 0
+        self.lightModifierStatus = 1
+        self.lightModifierDuration = int(growthRequirements['lightExposureDuration'] * 3600)
 
         self.requiredMoisture = (float(growthRequirements['waterDepth']) / 8.0) * 100
-        required_pH_range = growthRequirements['pH'].split(' - ')
-        required_seedTemp_range = growthRequirements['seedTemperature'].split(' - ')
-        required_cropTemp_range = growthRequirements['cropTemperature'].split(' - ')
-
         self.wateringInterval = int(growthRequirements['wateringInterval'] * 3600)
 
+        self.requiredLightExposure = growthRequirements['lightExposureDuration'] * 3600
+
+        required_pH_range = growthRequirements['pH'].split(' - ')
         self.required_min_pH = float(required_pH_range[0])
         self.required_max_pH = float(required_pH_range[1])
         self.new_pH = 0.0
 
+        required_seedTemp_range = growthRequirements['seedTemperature'].split(' - ')
+        required_cropTemp_range = growthRequirements['cropTemperature'].split(' - ')
         self.required_seed_minTemp = float(required_seedTemp_range[0])
         self.required_seed_maxTemp = float(required_seedTemp_range[1])
         self.required_crop_minTemp = float(required_cropTemp_range[0])
@@ -68,7 +73,6 @@ class PlotSensorDataReceiver:
 
     def __collectNewData(self):
         # self.__generateChange(random.uniform,'co2_concentration', -100.0, 100.0, 500.0, 2000.0)
-        # self.__generateChange(random.randint, 'light_levels', -100, 100, 0.0, 10000)
 
 
 
@@ -93,7 +97,6 @@ class PlotSensorDataReceiver:
             if currentElapsedTime % 5 == 0:
                 self.__generateChange(random.uniform, 'soil_moisture', -0.05, 0.0, 0.0, 100.0)
                 self.__generateChange(random.uniform, 'soil_pH', 0.01, 0.05, 0.0, 14.0)
-
         elif self.sprinklerStatus == 1 and self.sprinklerDuration > 0:
             # MANUAL GROWTH VARIABLE CONTROL
             newMoisture = self.soil_moisture + 12.5
@@ -128,7 +131,9 @@ class PlotSensorDataReceiver:
         if self.tempModifierStatus == 0:
             # AUTOMATED GROWTH VARIABLE CONTROL
             if self.soil_temp < self.required_crop_minTemp or self.soil_temp > self.required_crop_maxTemp:
-                self.activateTemperatureModifier(30, self.required_crop_minTemp)
+                self.activateTemperatureModifier(30, self.required_crop_minTemp + 1.0)
+
+                self.socket.send({'tempModifier':30})
 
             # NATURAL FLUCTUATIONS
             if currentElapsedTime % 3 == 0:
@@ -165,6 +170,37 @@ class PlotSensorDataReceiver:
                 self.tempModifierDuration = 0
 
 
+
+        ### LIGHTING ###
+        elapsedTimeRelativeTo24hrs = currentElapsedTime % 86400
+
+        if self.lightModifierDuration == 0:
+            self.lightModifierStatus = 0
+
+        if elapsedTimeRelativeTo24hrs == 0:
+            # after 24 hours have passed, turn lighting back on for the specified duration
+            duration = int(self.requiredLightExposure)
+
+            self.activateLightModifier(duration);
+
+            self.socket.send({'lightModifier':duration})
+
+        if self.lightModifierStatus == 0:
+            # NATURAL FLUCTUATIONS
+            if currentElapsedTime % 5 == 0:
+                self.light_levels = random.randint(100, 200)
+        elif self.lightModifierStatus == 1:
+            if elapsedTimeRelativeTo24hrs == 1:
+                # turn on lighting modifier on the first second of the day 
+                self.socket.send({'lightModifier': self.lightModifierDuration - 1})
+
+            self.lightModifierDuration -= 1
+
+            # NATURAL FLUCTUATIONS
+            if currentElapsedTime % 10 == 0:
+                self.light_levels = random.randint(9000, 10000)
+
+
         self.listen() # repeats collection
 
 
@@ -172,10 +208,10 @@ class PlotSensorDataReceiver:
     def getData(self):
         data = {
             "plotNum" : self.plot_num,
-            "soilTemp" : self.soil_temp,
-            "pH" : self.soil_pH,
-            "co2" : self.co2_concentration,
-            "moisture" : self.soil_moisture,
+            "soilTemp" : round(self.soil_temp, 2),
+            "pH" : round(self.soil_pH, 2),
+            "co2" : round(self.co2_concentration, 2),
+            "moisture" : round(self.soil_moisture, 2),
             "lighting" : self.light_levels
         }
 
@@ -207,4 +243,6 @@ class PlotSensorDataReceiver:
 
         self.newTemp = temp
 
-        self.socket.send({'tempModifier':duration})
+    def activateLightModifier(self, duration:int):
+        self.lightModifierStatus = 1
+        self.lightModifierDuration = duration

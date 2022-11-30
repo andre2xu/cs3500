@@ -21,7 +21,8 @@ import {
     SENSOR_DATA_DISPLAY_STATUS,
     PLOT_SPRINKLER_STATUS,
     PLOT_FERTILIZER_STATUS,
-    PLOT_TEMPERATURE_MODIFIER_STATUS
+    PLOT_TEMPERATURE_MODIFIER_STATUS,
+    PLOT_LIGHTING_MODIFIER_STATUS
 } from './data.js';
 
 
@@ -36,6 +37,9 @@ SOCKET.on('message', (msg) => {
         }
         else if (msg['tempModifier'] !== undefined && PLOT_TEMPERATURE_MODIFIER_STATUS.innerText.includes('OFF')) {
             activateTempModifier(`${msg['tempModifier']}`);
+        }
+        else if (msg['lightModifier'] !== undefined && PLOT_LIGHTING_MODIFIER_STATUS.innerText.includes('OFF')) {
+            activateLightModifier(`${msg['lightModifier']}`);
         }
     }
 });
@@ -331,13 +335,19 @@ export function sendSwitchDataToBackend(data) {
         const NUM_OF_COMPONENTS = COMPONENTS_TO_TURN_ON.length;
 
         if (NUM_OF_COMPONENTS > 0) {
+            const ACTIVATION_DURATION = data['activationDuration'];
+
             for (let i=0; i < NUM_OF_COMPONENTS; i++) {
                 const COMPONENT_INITIAL_LETTER = COMPONENTS_TO_TURN_ON[i];
 
                 switch (COMPONENT_INITIAL_LETTER) {
                     case 's':
-                        activateSprinkler(data['activationDuration']);
+                        activateSprinkler(ACTIVATION_DURATION);
                         break;
+                    case 't':
+                        activateTempModifier(ACTIVATION_DURATION);
+                    case 'l':
+                        activateLightModifier(ACTIVATION_DURATION);
                 }
             }
         }
@@ -387,5 +397,15 @@ export function activateTempModifier(duration) {
 
     setTimeout(() => {
         PLOT_TEMPERATURE_MODIFIER_STATUS.innerText = 'Temperature Modifier: OFF';
+    }, duration * 1000);
+};
+
+export function activateLightModifier(duration) {
+    duration = parseInt(duration);
+
+    PLOT_LIGHTING_MODIFIER_STATUS.innerText = 'Lighting Modifier: ON';
+
+    setTimeout(() => {
+        PLOT_LIGHTING_MODIFIER_STATUS.innerText = 'Lighting Modifier: OFF';
     }, duration * 1000);
 };

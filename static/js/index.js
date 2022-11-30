@@ -195,6 +195,13 @@ window.addEventListener('load', () => {
                         temperature: INPUT_ELEMENTS[2].value
                     });
                     break;
+                case 'lighting':
+                    sendSwitchDataToBackend({
+                        component: 'lightingModifier',
+                        plotNum: INPUT_ELEMENTS[0].value,
+                        activationDuration: INPUT_ELEMENTS[1].value
+                    });
+                    break;
             }
         }
     });

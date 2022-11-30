@@ -153,7 +153,9 @@ def handleSwitch():
         elif component == 'temperatureModifier':
             receiverInstance.activateTemperatureModifier(duration, float(switchData['temperature']))
             componentsToTurnOn += 't'
-
+        elif component == 'lightingModifier':
+            receiverInstance.activateLightModifier(duration)
+            componentsToTurnOn += 'l'
 
     return componentsToTurnOn
 
