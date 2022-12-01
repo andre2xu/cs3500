@@ -29,6 +29,8 @@ class PlotSensorDataReceiver:
 
         self.requiredDaysForSeedGrowth = growthRequirements['daysForSeedGrowth']
         self.requiredDaysForCropGrowth = growthRequirements['daysForCropGrowth']
+        self.growthStage = 'seed'
+        self.totalSecondsRequiredForSeedGrowth = self.requiredDaysForSeedGrowth * 86400 # total seconds for seed growth
 
         self.requiredMoisture = (float(growthRequirements['waterDepth']) / 8.0) * 100
         self.wateringInterval = int(growthRequirements['wateringInterval'] * 3600)
@@ -132,15 +134,24 @@ class PlotSensorDataReceiver:
 
 
         ### SOIL TEMPERATURE ###
+        print(f'{currentElapsedTime} - {self.totalSecondsRequiredForSeedGrowth} = {currentElapsedTime - self.totalSecondsRequiredForSeedGrowth}')
+
         if self.tempModifierDuration == 0:
             self.tempModifierStatus = 0
+        if currentElapsedTime - self.totalSecondsRequiredForSeedGrowth == 0:
+            self.growthStage = 'crop'
 
         if self.tempModifierStatus == 0:
             # AUTOMATED GROWTH VARIABLE CONTROL
-            if systemIsDoingComparison and self.soil_temp < self.required_crop_minTemp or self.soil_temp > self.required_crop_maxTemp:
-                self.activateTemperatureModifier(30, self.required_crop_minTemp + 1.0)
+            if systemIsDoingComparison:
+                if self.growthStage == 'seed' and (self.soil_temp < self.required_seed_minTemp or self.soil_temp > self.required_seed_maxTemp):
+                    self.activateTemperatureModifier(30, self.required_seed_minTemp + 1.0)
 
-                self.socket.send({'tempModifier':30})
+                    self.socket.send({'tempModifier':30})
+                elif self.growthStage == 'crop' and (self.soil_temp < self.required_crop_minTemp or self.soil_temp > self.required_crop_maxTemp):
+                    self.activateTemperatureModifier(30, self.required_crop_minTemp + 1.0)
+
+                    self.socket.send({'tempModifier':30})
 
             # NATURAL FLUCTUATIONS
             if currentElapsedTime % 10 == 0:
@@ -302,6 +313,7 @@ class PlotSensorDataReceiver:
     def updateGrowthRequirements(self, newGrowthRequirements:dict):
         self.requiredDaysForSeedGrowth = newGrowthRequirements['daysForSeedGrowth']
         self.requiredDaysForCropGrowth = newGrowthRequirements['daysForCropGrowth']
+        self.totalSecondsRequiredForSeedGrowth = newGrowthRequirements['daysForSeedGrowth'] * 86400
 
         self.requiredMoisture = (float(newGrowthRequirements['waterDepth']) / 8.0) * 100
         self.wateringInterval = int(newGrowthRequirements['wateringInterval'] * 3600)
