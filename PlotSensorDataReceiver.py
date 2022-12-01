@@ -134,8 +134,6 @@ class PlotSensorDataReceiver:
 
 
         ### SOIL TEMPERATURE ###
-        print(f'{currentElapsedTime} - {self.totalSecondsRequiredForSeedGrowth} = {currentElapsedTime - self.totalSecondsRequiredForSeedGrowth}')
-
         if self.tempModifierDuration == 0:
             self.tempModifierStatus = 0
         if currentElapsedTime - self.totalSecondsRequiredForSeedGrowth == 0:
