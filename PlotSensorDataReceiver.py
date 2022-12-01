@@ -1,4 +1,4 @@
-import random, threading, time, datetime
+import random, threading, time
 
 class PlotSensorDataReceiver:
     """
