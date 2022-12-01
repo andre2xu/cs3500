@@ -29,12 +29,14 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTemp, cropMinTemp, cropMaxTemp, minpH, maxpH, minCO2, maxCO2, lightExposureDuration, waterDepth, wateringInterval):
+def validateGrowthRequirements(plotNum, seedGrowthDays, cropGrowthDays, seedMinTemp, seedMaxTemp, cropMinTemp, cropMaxTemp, minpH, maxpH, minCO2, maxCO2, lightExposureDuration, waterDepth, wateringInterval):
     isValidData = True
 
     if plotNum < 0 or plotNum > 10: 
         isValidData = False
-    if  harvestCountdown < 1:
+    if seedGrowthDays < 1:
+        isValidData = False
+    if cropGrowthDays < 1:
         isValidData = False
     if seedMinTemp < -100 or seedMaxTemp > 100 or seedMinTemp > seedMaxTemp:
         isValidData = False
@@ -54,7 +56,8 @@ def validateGrowthRequirements(plotNum, harvestCountdown, seedMinTemp, seedMaxTe
     if isValidData:
         return {
             'plot_num':plotNum,
-            'days_for_growth':harvestCountdown,
+            'days_for_seed_growth': seedGrowthDays,
+            'days_for_crop_growth':cropGrowthDays,
             'seed_min_temp':seedMinTemp,
             'seed_max_temp':seedMaxTemp,
             'crop_min_temp':cropMinTemp,
@@ -116,14 +119,15 @@ def getGrowthRequirements(plotNum):
     if growthRequirements != None:
         response = {
             'harvestDate': growthRequirements[1],
-            'days': growthRequirements[2],
-            'seedTemperature': f'{growthRequirements[3]} - {growthRequirements[4]}',
-            'cropTemperature': f'{growthRequirements[5]} - {growthRequirements[6]}',
-            'pH': f'{growthRequirements[7]} - {growthRequirements[8]}',
-            'co2Concentration': f'{growthRequirements[9]} - {growthRequirements[10]}',
-            'lightExposureDuration': growthRequirements[11],
-            'waterDepth': growthRequirements[12],
-            'wateringInterval': growthRequirements[13]
+            'daysForSeedGrowth': growthRequirements[2],
+            'daysForCropGrowth': growthRequirements[3],
+            'seedTemperature': f'{growthRequirements[4]} - {growthRequirements[5]}',
+            'cropTemperature': f'{growthRequirements[6]} - {growthRequirements[7]}',
+            'pH': f'{growthRequirements[8]} - {growthRequirements[9]}',
+            'co2Concentration': f'{growthRequirements[10]} - {growthRequirements[11]}',
+            'lightExposureDuration': growthRequirements[12],
+            'waterDepth': growthRequirements[13],
+            'wateringInterval': growthRequirements[14]
         }
 
     return response
@@ -167,7 +171,8 @@ def addCrop():
     response = ''
 
     plotNum = request.form['plotNum']
-    harvestCountdown = request.form['harvestCountdown']
+    seedGrowthDays = request.form['seedGrowthDays']
+    cropGrowthDays = request.form['cropGrowthDays']
     seedMinTemp = request.form['seedTemperatureV1']
     seedMaxTemp = request.form['seedTemperatureV2']
     cropMinTemp = request.form['cropTemperatureV1']
@@ -184,7 +189,7 @@ def addCrop():
     queryResult = db.session.execute(select(CropGrowthRequirements.plot_num).where(CropGrowthRequirements.plot_num == plotNum))
 
     if (queryResult.fetchone() == None):
-        validatedData = validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval))
+        validatedData = validateGrowthRequirements(int(plotNum), int(seedGrowthDays), int(cropGrowthDays), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval))
 
         if type(validatedData) is dict: 
             newGrowthRequirements = CropGrowthRequirements(**validatedData)
@@ -205,7 +210,8 @@ def addCrop():
 @app.route("/api/editCrop", methods=["POST"])
 def editCrop():
     plotNum = request.form['plotNum']
-    harvestCountdown = request.form['harvestCountdown']
+    seedGrowthDays = request.form['seedGrowthDays']
+    cropGrowthDays = request.form['cropGrowthDays']
     seedMinTemp = request.form['seedTemperatureV1']
     seedMaxTemp = request.form['seedTemperatureV2']
     cropMinTemp = request.form['cropTemperatureV1']
@@ -222,7 +228,7 @@ def editCrop():
     queryResult = db.session.execute(select(CropGrowthRequirements.plot_num).where(CropGrowthRequirements.plot_num == plotNum))
 
     if (queryResult.fetchone() != None):
-        validatedData = validateGrowthRequirements(int(plotNum), int(harvestCountdown), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval))
+        validatedData = validateGrowthRequirements(int(plotNum), int(seedGrowthDays), int(cropGrowthDays), float(seedMinTemp), float(seedMaxTemp), float(cropMinTemp), float(cropMaxTemp), float(minpH), float(maxpH), int(minCO2), int(maxCO2), float(lightExposureDuration), float(waterDepth), float(wateringInterval))
 
         if type(validatedData) is dict:
             updateQuery = update(CropGrowthRequirements).where(CropGrowthRequirements.plot_num == plotNum).values(**validatedData)

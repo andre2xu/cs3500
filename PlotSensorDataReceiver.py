@@ -27,6 +27,9 @@ class PlotSensorDataReceiver:
         self.co2ModifierStatus = 0
         self.co2ModifierDuration = 0
 
+        self.requiredDaysForSeedGrowth = growthRequirements['daysForSeedGrowth']
+        self.requiredDaysForCropGrowth = growthRequirements['daysForCropGrowth']
+
         self.requiredMoisture = (float(growthRequirements['waterDepth']) / 8.0) * 100
         self.wateringInterval = int(growthRequirements['wateringInterval'] * 3600)
 
@@ -297,6 +300,9 @@ class PlotSensorDataReceiver:
             sensorThread.start()
 
     def updateGrowthRequirements(self, newGrowthRequirements:dict):
+        self.requiredDaysForSeedGrowth = newGrowthRequirements['daysForSeedGrowth']
+        self.requiredDaysForCropGrowth = newGrowthRequirements['daysForCropGrowth']
+
         self.requiredMoisture = (float(newGrowthRequirements['waterDepth']) / 8.0) * 100
         self.wateringInterval = int(newGrowthRequirements['wateringInterval'] * 3600)
 

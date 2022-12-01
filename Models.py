@@ -8,7 +8,8 @@ class CropGrowthRequirements(db.Model):
 
     plot_num = db.Column(db.Integer, primary_key = True)
     harvest_date = db.Column(db.Date, default = date.today())
-    days_for_growth = db.Column(db.Integer, default = 0)
+    days_for_seed_growth = db.Column(db.Integer, default = 0)
+    days_for_crop_growth = db.Column(db.Integer, default = 0)
     seed_min_temp = db.Column(db.Float, default = 0) # celsius
     seed_max_temp = db.Column(db.Float, default = 0) # celsius
     crop_min_temp = db.Column(db.Float, default = 0) # celsius
@@ -27,10 +28,11 @@ class CropGrowthRequirements(db.Model):
 
         return self
 
-    def __init__(self, plot_num, days_for_growth, seed_min_temp, seed_max_temp, crop_min_temp, crop_max_temp,min_pH, max_pH, min_co2, max_co2, light_exp, water_depth, watering_interval):
+    def __init__(self, plot_num, days_for_seed_growth, days_for_crop_growth, seed_min_temp, seed_max_temp, crop_min_temp, crop_max_temp,min_pH, max_pH, min_co2, max_co2, light_exp, water_depth, watering_interval):
         self.plot_num = plot_num
-        self.harvest_date = date.today() + timedelta(days = days_for_growth)
-        self.days_for_growth = days_for_growth
+        self.harvest_date = date.today() + timedelta(days = days_for_seed_growth + days_for_crop_growth)
+        self.days_for_seed_growth = days_for_seed_growth
+        self.days_for_crop_growth = days_for_crop_growth
         self.seed_min_temp = seed_min_temp
         self.seed_max_temp = seed_max_temp
         self.crop_min_temp = crop_min_temp

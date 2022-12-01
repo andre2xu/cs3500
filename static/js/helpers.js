@@ -247,7 +247,7 @@ export function loadGrowthRequirements(plotNum) {
     XHR.onreadystatechange = function () {
         const RESPONSE = XHR.responseText;
 
-        let days = 'Days:';
+        let days = 'Total Days:';
         let seedTemp = 'Seed temperature (°C):';
         let cropTemp = 'Crop temperature (°C):';
         let pH = 'pH:';
@@ -263,7 +263,7 @@ export function loadGrowthRequirements(plotNum) {
 
             window.harvestDate = new Date(GROWTH_REQUIREMENTS['harvestDate']);
 
-            days += ` ${GROWTH_REQUIREMENTS['days']}`;
+            days += ` ${GROWTH_REQUIREMENTS['daysForSeedGrowth'] + GROWTH_REQUIREMENTS['daysForCropGrowth']}`;
 
             seedTemp += ` ${GROWTH_REQUIREMENTS['seedTemperature']}`;
 

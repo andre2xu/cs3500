@@ -22,8 +22,13 @@
       </div>
 
       <div class="formField">
-        <label for="addHarvestCountdown">Days required for growth:</label>
-        <input id="addHarvestCountdown" name="harvestCountdown" type="number"  min="1" value="1">
+        <label for="addDaysForSeedGrowth">Days for seed growth:</label>
+        <input id="addDaysForSeedGrowth" name="seedGrowthDays" type="number"  min="1" value="1">
+      </div>
+
+      <div class="formField">
+        <label for="addDaysForCropGrowth">Days for crop growth:</label>
+        <input id="addDaysForCropGrowth" name="cropGrowthDays" type="number"  min="1" value="1">
       </div>
 
       <div class="formField">
@@ -85,8 +90,13 @@
       </div>
 
       <div class="formField">
-        <label for="editHarvestCountdown">Days required for growth:</label>
-        <input id="editHarvestCountdown" name="harvestCountdown" type="number" min="1" value="1">
+        <label for="editDaysForSeedGrowth">Days for seed growth:</label>
+        <input id="editDaysForSeedGrowth" name="seedGrowthDays" type="number"  min="1" value="1">
+      </div>
+
+      <div class="formField">
+        <label for="editDaysForCropGrowth">Days for crop growth:</label>
+        <input id="editDaysForCropGrowth" name="cropGrowthDays" type="number"  min="1" value="1">
       </div>
 
       <div class="formField">
@@ -284,7 +294,7 @@
         <li>&ZeroWidthSpace;</li>
 
         <li><u>GROWTH REQUIREMENTS</u></li>
-        <li data-gr-days>Days:</li>
+        <li data-gr-days>Total Days:</li>
         <li data-gr-seed-temperature>Seed temperature (&deg;C):</li>
         <li data-gr-crop-temperature>Crop temperature (&deg;C):</li>
         <li data-gr-pH>pH:</li>
