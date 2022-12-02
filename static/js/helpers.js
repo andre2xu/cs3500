@@ -225,6 +225,26 @@ export function loadActivePlots() {
     XHR.send(null);
 };
 
+export function loadPlotsReadyForHarvesting() {
+    const XHR = new XMLHttpRequest();
+    XHR.onreadystatechange = function () {
+        const RESPONSE = XHR.responseText;
+        const NUMBER_OF_PLOTS = RESPONSE.length;
+
+        if (NUMBER_OF_PLOTS > 0) {
+            for (let i=0; i < NUMBER_OF_PLOTS; i++) {
+                const PLOT_NUM = RESPONSE[i];
+
+                document.querySelector(`[data-plot-num="${PLOT_NUM}"]`).lastElementChild.classList.replace('red', 'orange');
+
+                markMapPlotAsReadyForHarvesting(PLOT_NUM);
+            }
+        }
+    }
+    XHR.open('GET', '/db/plotsReadyForHarvesting', true);
+    XHR.send(null);
+};
+
 export function deleteGrowthRequirements(plotNum) {
     const XHR = new XMLHttpRequest();
     XHR.open('GET', `/api/deleteCrop/${plotNum}`, false);
@@ -239,7 +259,9 @@ export function deleteGrowthRequirements(plotNum) {
     PLOT_GR_WATER_DEPTH.innerText = 'Water supply depth (in):';
     PLOT_GR_WATERING_INTERVAL.innerText = 'Watering interval (hrs):';
 
-    document.querySelector(`[data-plot-num="${plotNum}"]`).lastElementChild.classList.replace('green', 'red');
+    const PLOT_INDICATOR_LIGHT = document.querySelector(`[data-plot-num="${plotNum}"]`).lastElementChild;
+    PLOT_INDICATOR_LIGHT.classList.replace('green', 'red');
+    PLOT_INDICATOR_LIGHT.classList.replace('orange', 'red');
 };
 
 export function loadGrowthRequirements(plotNum) {
@@ -260,8 +282,12 @@ export function loadGrowthRequirements(plotNum) {
 
         if (RESPONSE.length > 0) {
             const GROWTH_REQUIREMENTS = JSON.parse(RESPONSE);
+            const HARVEST_DATE = new Date(GROWTH_REQUIREMENTS['harvestDate']);
+            const CURRENT_DATE = new Date();
 
-            window.harvestDate = new Date(GROWTH_REQUIREMENTS['harvestDate']);
+            if (HARVEST_DATE > CURRENT_DATE) {
+                window.harvestDate = HARVEST_DATE;
+            }
 
             days += ` ${GROWTH_REQUIREMENTS['daysForSeedGrowth'] + GROWTH_REQUIREMENTS['daysForCropGrowth']}`;
 
@@ -441,6 +467,13 @@ export function activateMapPlot(plotNum) {
     FARM_MAP.querySelector(`[data-map-plot="${plotNum}"]`).classList.add('active');
 };
 
+export function markMapPlotAsReadyForHarvesting(plotNum) {
+    FARM_MAP.querySelector(`[data-map-plot="${plotNum}"]`).classList.add('frozen');
+};
+
 export function deactivateMapPlot(plotNum) {
-    FARM_MAP.querySelector(`[data-map-plot="${plotNum}"]`).classList.remove('active');
+    const MAP_PLOT = FARM_MAP.querySelector(`[data-map-plot="${plotNum}"]`);
+
+    MAP_PLOT.classList.remove('active');
+    MAP_PLOT.classList.remove('frozen');
 };

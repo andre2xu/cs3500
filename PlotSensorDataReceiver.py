@@ -304,7 +304,7 @@ class PlotSensorDataReceiver:
         self.threadingIsActive = False
 
     def listen(self):
-        if (self.threadingIsActive):
+        if self.threadingIsActive:
             sensorThread = threading.Timer(1.0, self.__collectNewData)
             sensorThread.start()
 

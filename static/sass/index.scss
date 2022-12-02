@@ -286,6 +286,9 @@ body {
         &.active {
           background-color: green;
         }
+        &.frozen {
+          background-color: orange;
+        }
       }
     }
 
@@ -750,6 +753,9 @@ body {
           }
           &.green {
             background-color: $green_light;
+          }
+          &.orange {
+            background-color: orange;
           }
         }
       }

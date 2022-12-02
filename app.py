@@ -1,4 +1,4 @@
-import os, mimetypes
+import os, mimetypes, datetime
 from flask import Flask, request, render_template
 from Models import db, CropGrowthRequirements
 from sqlalchemy import select, update
@@ -98,8 +98,8 @@ def index():
 def getActivePlots():
     activePlots = '';
 
-    # SELECT plot_num FROM growthreq
-    queryResult = db.session.execute(select(CropGrowthRequirements.plot_num))
+    # SELECT plot_num FROM growthreq WHERE harvest_date > current_date
+    queryResult = db.session.execute(select(CropGrowthRequirements.plot_num).where(CropGrowthRequirements.harvest_date > datetime.datetime.today().date()))
     plotsArray = queryResult.fetchall()
     num_of_active_plots = len(plotsArray)
 
@@ -108,6 +108,21 @@ def getActivePlots():
             activePlots += str(plotsArray[i][0]);
 
     return activePlots
+
+@app.route("/db/plotsReadyForHarvesting", methods=["GET"])
+def getPlotsReadyForHarvesting():
+    plotsReadyForHarvesting = '';
+
+    # SELECT plot_num FROM growthreq WHERE harvest_date <= current_date
+    queryResult = db.session.execute(select(CropGrowthRequirements.plot_num).where(CropGrowthRequirements.harvest_date <= datetime.datetime.today().date()))
+    plotsArray = queryResult.fetchall()
+    num_of_active_plots = len(plotsArray)
+
+    if (num_of_active_plots > 0):
+        for i in range(num_of_active_plots):
+            plotsReadyForHarvesting += str(plotsArray[i][0]);
+
+    return plotsReadyForHarvesting
 
 @app.route("/db/growthRequirements/<plotNum>", methods=["GET"])
 def getGrowthRequirements(plotNum):
@@ -245,9 +260,9 @@ def deleteCrop(plotNum):
     CropGrowthRequirements.query.filter_by(plot_num=plotNum).delete()
     db.session.commit()
 
-    SENSOR_DATA_GENERATORS[plotNum].stopListening()
-
     if plotNum in SENSOR_DATA_GENERATORS:
+        SENSOR_DATA_GENERATORS[plotNum].stopListening()
+
         del SENSOR_DATA_GENERATORS[plotNum]
 
     return ''

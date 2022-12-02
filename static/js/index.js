@@ -15,6 +15,7 @@ import {
     restartServer,
     submitForm,
     loadActivePlots,
+    loadPlotsReadyForHarvesting,
     deleteGrowthRequirements,
     loadGrowthRequirements,
     loadSensorData,
@@ -36,6 +37,7 @@ window.addEventListener('load', () => {
 
     const PLOT_NUM = selectedPlot.firstElementChild.innerText.split('#')[1];
     loadActivePlots();
+    loadPlotsReadyForHarvesting();
     loadGrowthRequirements(PLOT_NUM);
     loadSensorData(PLOT_NUM);
 
@@ -130,13 +132,19 @@ window.addEventListener('load', () => {
                 EDIT_FORM.classList.remove('hidden');
                 break;
             case 'Delete':
-                if (selectedPlot.lastElementChild.classList.contains('green')) {
+                const PLOT = selectedPlot.lastElementChild;
+
+                if (PLOT.classList.contains('green')) {
                     deleteGrowthRequirements(SELECTED_PLOT_NUM);
                     loadSensorData(SELECTED_PLOT_NUM);
                     deactivateMapPlot(SELECTED_PLOT_NUM);
 
                     window.harvestDate = null;
                     updateHarvestCountdown();
+                }
+                else if (PLOT.classList.contains('orange')) {
+                    deleteGrowthRequirements(SELECTED_PLOT_NUM);
+                    deactivateMapPlot(SELECTED_PLOT_NUM);
                 }
 
                 break;
