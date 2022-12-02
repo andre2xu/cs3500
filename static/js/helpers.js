@@ -34,6 +34,10 @@ SOCKET.connect('http://127.0.0.1:5000/');
 
 SOCKET.on('message', (msg) => {
     if (msg.constructor === Object) {
+        if (msg['plotIsReadyToHarvest']) {
+            window.location.reload();
+        }
+
         if (msg['sprinkler'] !== undefined && PLOT_SPRINKLER_STATUS.innerText.includes('OFF')) {
             activateSprinkler(`${msg['sprinkler']}`, true);
         }

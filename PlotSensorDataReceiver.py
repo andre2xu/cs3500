@@ -1,4 +1,4 @@
-import random, threading, time
+import random, threading, time, datetime
 
 class PlotSensorDataReceiver:
     """
@@ -27,6 +27,7 @@ class PlotSensorDataReceiver:
         self.co2ModifierStatus = 0
         self.co2ModifierDuration = 0
 
+        self.harvestDate = datetime.datetime.strptime(growthRequirements['harvestDate'], '%Y-%m-%d').date()
         self.requiredDaysForSeedGrowth = growthRequirements['daysForSeedGrowth']
         self.requiredDaysForCropGrowth = growthRequirements['daysForCropGrowth']
         self.growthStage = 'seed'
@@ -304,9 +305,13 @@ class PlotSensorDataReceiver:
         self.threadingIsActive = False
 
     def listen(self):
-        if self.threadingIsActive:
+        cropIsReadyToHarvest = datetime.datetime.today().date() > self.harvestDate
+
+        if self.threadingIsActive and cropIsReadyToHarvest == False:
             sensorThread = threading.Timer(1.0, self.__collectNewData)
             sensorThread.start()
+        elif cropIsReadyToHarvest:
+            self.socket.send({'plotIsReadyToHarvest':self.plot_num})
 
     def updateGrowthRequirements(self, newGrowthRequirements:dict):
         self.requiredDaysForSeedGrowth = newGrowthRequirements['daysForSeedGrowth']
