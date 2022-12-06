@@ -39,6 +39,15 @@ class TestPlotSensorDataReceiver(flask_unittest.AppClientTestCase):
         self.assertEqual(type(data), dict)
         self.assertEqual(['plotNum', 'soilTemp', 'pH', 'co2', 'moisture', 'lighting'], list(data.keys()))
 
+    def test_randomDataGeneration(self, app, client):
+        old_data = list(self.receiver.getData().values())
+
+        self.receiver._PlotSensorDataReceiver__collectNewData()
+
+        new_data = list(self.receiver.getData().values())
+
+        self.assertNotEqual(old_data, new_data)
+
 
 
 if __name__ == '__main__':
