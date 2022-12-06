@@ -1,4 +1,8 @@
 import sys
+from datetime import date, timedelta
+
+import sqlalchemy.exc
+
 sys.path.append('../')
 
 import flask_unittest
@@ -21,7 +25,8 @@ class TestModels(flask_unittest.AppClientTestCase):
     def setUp(self, app, client):
         self.sample1 = CropGrowthRequirements(
             plot_num=0,
-            days_for_growth=12,
+            days_for_crop_growth=10,
+            days_for_seed_growth=40,
             seed_min_temp=20,
             seed_max_temp=50,
             crop_min_temp=30,
@@ -88,7 +93,9 @@ class TestModels(flask_unittest.AppClientTestCase):
         with app.app_context():
             data = {
                 'plot_num': 1,
-                'days_for_growth': 12,
+                'harvest_date': 0,
+                'days_for_crop_growth': 12,
+                'days_for_seed_growth' : 10,
                 'seed_min_temp': 10,
                 'seed_max_temp': 60,
                 'crop_min_temp': 10,
@@ -101,16 +108,21 @@ class TestModels(flask_unittest.AppClientTestCase):
                 'water_depth': 1,
                 'watering_interval': 12
             }
-            db.session.add(CropGrowthRequirements(data['plot_num'], data['days_for_growth'], data['seed_min_temp'], data['seed_max_temp'], data['crop_min_temp'], data['crop_max_temp'], data['min_pH'], data['max_pH'], data['min_co2'], data['max_co2'], data['light_exp'], data['water_depth'], data['watering_interval']))
-            db.session.commit
+            db.session.add(CropGrowthRequirements(data['plot_num'], data['days_for_crop_growth'],data['days_for_seed_growth'], data['seed_min_temp'], data['seed_max_temp'], data['crop_min_temp'], data['crop_max_temp'], data['min_pH'], data['max_pH'], data['min_co2'], data['max_co2'], data['light_exp'], data['water_depth'], data['watering_interval']))
+            db.session.commit()
             check = db.session.execute(select(['*']).where(CropGrowthRequirements.plot_num == data['plot_num'])).fetchall()
-            for i in check:
-                self.assertAlmostEquals(check, data[i]) # Iterate through the database checking if the data was inserted correctly.
+            data_list = list(data.values())
+            for i in range(15):
+                if i != 1: #TODO: test harvest_date
+                    self.assertAlmostEqual(check[0][i], data_list[i]) # Iterate through the database checking if the data was inserted correctly.
 
 
     def test_delete(self, app, client):
         with app.app_context():
             CropGrowthRequirements.query.filter_by(plot_num=1).delete()
             db.session.commit()
-            check = db.session.execute(select(['*'])).fetchall()
-            self.assertIsNotNone(check)
+            with self.assertRaises(sqlalchemy.exc.OperationalError): #tests if sqlalchemy raises exception, meaning table does not exist anymore
+                db.session.execute(select(['*'])).fetchall()
+
+if __name__ == '__main__':
+    flask_unittest.main()
