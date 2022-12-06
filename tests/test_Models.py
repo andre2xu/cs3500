@@ -1,11 +1,6 @@
-import sys
-from datetime import date, timedelta
-
-import sqlalchemy.exc
+import sys, sqlalchemy.exc, flask_unittest
 
 sys.path.append('../')
-
-import flask_unittest
 
 from Models import CropGrowthRequirements, db
 from flask import Flask
@@ -116,13 +111,14 @@ class TestModels(flask_unittest.AppClientTestCase):
                 if i != 1: #TODO: test harvest_date
                     self.assertAlmostEqual(check[0][i], data_list[i]) # Iterate through the database checking if the data was inserted correctly.
 
-
     def test_delete(self, app, client):
         with app.app_context():
             CropGrowthRequirements.query.filter_by(plot_num=1).delete()
             db.session.commit()
             with self.assertRaises(sqlalchemy.exc.OperationalError): #tests if sqlalchemy raises exception, meaning table does not exist anymore
                 db.session.execute(select(['*'])).fetchall()
+
+
 
 if __name__ == '__main__':
     flask_unittest.main()
