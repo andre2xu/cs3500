@@ -1,3 +1,5 @@
+# navigate to tests folder and use the following command to run tests: python -m unittest test_XYZ.py
+
 import flask_unittest, sys
 
 sys.path.append('../')

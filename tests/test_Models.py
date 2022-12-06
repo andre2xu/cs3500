@@ -1,3 +1,5 @@
+# navigate to tests folder and use the following command to run tests: python -m unittest test_XYZ.py
+
 import sys, sqlalchemy.exc, flask_unittest
 
 sys.path.append('../')
