@@ -1,7 +1,7 @@
 # navigate to tests folder and use the following command to run tests: python -m unittest test_XYZ.py
 
 import sys, sqlalchemy.exc, flask_unittest
-
+import datetime
 sys.path.append('../')
 
 from Models import CropGrowthRequirements, db
@@ -90,7 +90,7 @@ class TestModels(flask_unittest.AppClientTestCase):
         with app.app_context():
             data = {
                 'plot_num': 1,
-                'harvest_date': 0,
+                'harvest_date': str(datetime.date.today() + datetime.timedelta(days =10 + 12)),
                 'days_for_crop_growth': 12,
                 'days_for_seed_growth' : 10,
                 'seed_min_temp': 10,
@@ -110,8 +110,7 @@ class TestModels(flask_unittest.AppClientTestCase):
             check = db.session.execute(select(['*']).where(CropGrowthRequirements.plot_num == data['plot_num'])).fetchall()
             data_list = list(data.values())
             for i in range(15):
-                if i != 1: #TODO: test harvest_date
-                    self.assertAlmostEqual(check[0][i], data_list[i]) # Iterate through the database checking if the data was inserted correctly.
+                self.assertAlmostEqual(check[0][i], data_list[i]) # Iterate through the database checking if the data was inserted correctly.
 
     def test_delete(self, app, client):
         with app.app_context():
